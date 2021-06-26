@@ -13,7 +13,7 @@ namespace maple_syrup_api.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=localhost;database=maplesyrup;user=root;password=Passw0rd!");
+            optionsBuilder.UseMySQL("server=localhost;database=maplesyrup;user=maplesyrup;password=Passw0rd!");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
