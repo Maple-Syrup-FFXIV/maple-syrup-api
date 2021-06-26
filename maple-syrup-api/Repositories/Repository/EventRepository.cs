@@ -1,14 +1,27 @@
-﻿using maple_syrup_api.Repositories.IRepository;
+﻿using maple_syrup_api.Context;
+using maple_syrup_api.Models;
+using maple_syrup_api.Repositories.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace maple_syrup_api.Repositories.Repository
 {
-    public class EventRepository : IEventRepository
+    public class EventRepository : BaseRepository<Event>, IEventRepository
     {
+        private readonly MapleSyrupContext _context;
+        public EventRepository(MapleSyrupContext pContext) : base(pContext)
+        {
+            _context = pContext;
+        }
 
+        public List<Event> GetAllFromStartDate(DateTime pFilterStartDate)
+        {
+            var query = _context.Set<Event>().Where(x => x.StartDate > pFilterStartDate);
+
+            var result = query.ToList();
+            return result;
+        }
 
     }
 }
