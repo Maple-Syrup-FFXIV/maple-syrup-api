@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace maple_syrup_api.Models
 {
-    public class GuildConfigs
+    public class GuildConfig
     {
         public int Id { get; set; }
 

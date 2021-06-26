@@ -8,8 +8,8 @@ using maple_syrup_api.Context;
 namespace maple_syrup_api.Migrations
 {
     [DbContext(typeof(MapleSyrupContext))]
-    [Migration("20210626151808_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210626171920_rename_guildconfig")]
+    partial class rename_guildconfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

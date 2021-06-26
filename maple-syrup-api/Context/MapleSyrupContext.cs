@@ -9,7 +9,8 @@ namespace maple_syrup_api.Context
         {
         }
 
-        public DbSet<GuildConfigs> GuildConfigs { get; set; }
+        public DbSet<GuildConfig> GuildConfigs { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,7 +21,7 @@ namespace maple_syrup_api.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<GuildConfigs>(entity =>
+            modelBuilder.Entity<GuildConfig>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.GuildId).IsRequired();
