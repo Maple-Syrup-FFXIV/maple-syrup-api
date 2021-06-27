@@ -1,5 +1,7 @@
 ﻿using maple_syrup_api.Context;
+using maple_syrup_api.Dto;
 using maple_syrup_api.Models;
+using maple_syrup_api.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -12,95 +14,31 @@ namespace maple_syrup_api.Controllers
     [ApiController]
     public class GuildConfigController : ControllerBase
     {
-        private readonly MapleSyrupContext _context;
-
-        public GuildConfigController(MapleSyrupContext context)
+        private readonly IGuildConfigService _guildService;
+        public GuildConfigController(IGuildConfigService pGuildConfigService)
         {
-            _context = context;
+            _guildService = pGuildConfigService;
         }
 
         // GET: api/GuildConfig
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GuildConfig>>> GetGuildConfig()
+        public async Task<ActionResult<GetGuildConfigsOut>> GetGuildConfigs()
         {
-            return await _context.GuildConfigs.ToListAsync();
-        }
+            var result = new GetGuildConfigsOut();
+            var guildList = _guildService.GetGuildConfigs();
 
-        // GET: api/GuildConfig/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GuildConfig>> GetGuildConfig(int id)
-        {
-            var guildConfig = await _context.GuildConfigs.FindAsync(id);
-
-            if (guildConfig == null)
+            result = new GetGuildConfigsOut()
             {
-                return NotFound();
-            }
-
-            return guildConfig;
-        }
-
-        // PUT: api/GuildConfig/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGuildConfig(int id, GuildConfig guildConfig)
-        {
-            if (id != guildConfig.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(guildConfig).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GuildConfigExists(id))
+                GuildList = guildList.Select(s => new PartialGuildGetGuildConfigs()
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+                    Id = s.Id,
+                    Prefix = s.Prefix,
+                    GuildId = s.GuildId
+                }).ToList()
+            };
+            return result;
         }
 
-        // POST: api/GuildConfig
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<GuildConfig>> PostGuildConfig(GuildConfig guildConfig)
-        {
-            _context.GuildConfigs.Add(guildConfig);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetGuildConfig", new { id = guildConfig.Id }, guildConfig);
-        }
-
-        // DELETE: api/GuildConfig/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGuildConfig(int id)
-        {
-            var guildConfig = await _context.GuildConfigs.FindAsync(id);
-            if (guildConfig == null)
-            {
-                return NotFound();
-            }
-
-            _context.GuildConfigs.Remove(guildConfig);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool GuildConfigExists(int id)
-        {
-            return _context.GuildConfigs.Any(e => e.Id == id);
-        }
+        
     }
 }
