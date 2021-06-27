@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 
 namespace maple_syrup_api.Dto
 {
-    public class AddGuildConfigIn
+    public class GetGuildConfigIn
     {
-        public string Prefix { get; set; }
-
         public string GuildId { get; set; }
     }
 
-    public class AddGuildConfigOut
+    public class GetGuildConfigOut
     {
         public int Id { get; set; }
 

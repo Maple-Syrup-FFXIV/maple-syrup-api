@@ -19,7 +19,19 @@ namespace maple_syrup_api.Repositories.Repository
         }
         public GuildConfig AddGuildConfig(AddGuildConfigIn pGuildConfig)
         {
-            throw new NotImplementedException();
+            GuildConfig guild = new GuildConfig()
+            {
+                Prefix = pGuildConfig.Prefix,
+                GuildId = pGuildConfig.GuildId
+            };
+            if (GuildConfigExists(guild.GuildId))
+            {
+                return null;
+            }
+            var query = _context.GuildConfigs.Add(guild);
+            _context.SaveChangesAsync();
+            return guild;
+            
         }
 
         public void EditGuildConfig(EditGuildConfigIn pGuildConfig)
@@ -29,7 +41,9 @@ namespace maple_syrup_api.Repositories.Repository
 
         public GuildConfig GetGuildConfig(string pGuildID)
         {
-            throw new NotImplementedException();
+            var result = _context.GuildConfigs.FirstOrDefault(x => x.GuildId == pGuildID);
+
+            return result;
         }
 
         public List<GuildConfig> GetGuildConfigs()
@@ -37,6 +51,11 @@ namespace maple_syrup_api.Repositories.Repository
             var result = _context.GuildConfigs.ToList();
 
             return result;
+        }
+
+        private bool GuildConfigExists(string pGuildID)
+        {
+            return _context.GuildConfigs.Any(x => x.GuildId == pGuildID);
         }
     }
 }

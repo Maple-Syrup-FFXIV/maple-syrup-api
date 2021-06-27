@@ -39,6 +39,39 @@ namespace maple_syrup_api.Controllers
             return result;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<GetGuildConfigOut>> GetGuildConfig(GetGuildConfigIn pGuildConfig)
+        {
+            var result = new GetGuildConfigOut();
+            var guild = _guildService.GetGuildConfig(pGuildConfig.GuildId);
+
+            result = new GetGuildConfigOut
+            {
+                Id = guild.Id,
+                Prefix = guild.Prefix,
+                GuildId = guild.GuildId
+            };
+
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<AddGuildConfigOut>> AddGuildConfig(AddGuildConfigIn pGuildConfig)
+        {
+            var result = new AddGuildConfigOut();
+            var guild = _guildService.AddGuildConfig(pGuildConfig);
+
+            if (guild is null)
+                return BadRequest();
+
+            result = new AddGuildConfigOut()
+            {
+                Id = guild.Id,
+                Prefix = guild.Prefix,
+                GuildId = guild.GuildId
+            };
+            return result;
+        }
         
     }
 }
