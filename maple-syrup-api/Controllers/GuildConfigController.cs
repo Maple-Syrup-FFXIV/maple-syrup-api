@@ -72,6 +72,17 @@ namespace maple_syrup_api.Controllers
             };
             return result;
         }
+
+        [HttpPost]
+        public async Task<ActionResult> EditGuildConfig(EditGuildConfigIn pGuildConfig)
+        {
+            var result = _guildService.EditGuildConfig(pGuildConfig);
+
+            if (!result)
+                return NotFound();
+
+            return NoContent();
+        }
         
     }
 }

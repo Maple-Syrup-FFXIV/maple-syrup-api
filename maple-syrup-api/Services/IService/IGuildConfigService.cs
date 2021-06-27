@@ -13,7 +13,7 @@ namespace maple_syrup_api.Services.IService
 
         GuildConfig GetGuildConfig(string pGuildID);
 
-        void EditGuildConfig(EditGuildConfigIn pGuildConfig);
+         bool EditGuildConfig(EditGuildConfigIn pGuildConfig);
 
         GuildConfig AddGuildConfig(AddGuildConfigIn pGuildConfig);
     }

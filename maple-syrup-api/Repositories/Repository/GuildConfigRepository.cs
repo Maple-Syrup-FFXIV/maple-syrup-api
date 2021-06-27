@@ -2,6 +2,7 @@
 using maple_syrup_api.Dto;
 using maple_syrup_api.Models;
 using maple_syrup_api.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,30 @@ namespace maple_syrup_api.Repositories.Repository
             
         }
 
-        public void EditGuildConfig(EditGuildConfigIn pGuildConfig)
+        public bool EditGuildConfig(EditGuildConfigIn pGuildConfig)
         {
-            throw new NotImplementedException();
+
+            
+            GuildConfig guild = new GuildConfig()
+            {
+                Id = _context.GuildConfigs.AsNoTracking().FirstOrDefault(x => x.GuildId == pGuildConfig.GuildId).Id,
+                Prefix = pGuildConfig.Prefix,
+                GuildId = pGuildConfig.GuildId
+            };
+            _context.Entry(guild).State = EntityState.Modified;
+
+            try
+            {
+                _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GuildConfigExists(pGuildConfig.GuildId))
+                    return false;
+                else
+                    throw;
+            }
+            return true;
         }
 
         public GuildConfig GetGuildConfig(string pGuildID)
@@ -55,7 +77,7 @@ namespace maple_syrup_api.Repositories.Repository
 
         private bool GuildConfigExists(string pGuildID)
         {
-            return _context.GuildConfigs.Any(x => x.GuildId == pGuildID);
+            return _context.GuildConfigs.AsNoTracking().Any(x => x.GuildId == pGuildID);
         }
     }
 }

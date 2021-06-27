@@ -21,9 +21,9 @@ namespace maple_syrup_api.Services.Service
             return _guildRepository.AddGuildConfig(pGuildConfig);
         }
 
-        public void EditGuildConfig(EditGuildConfigIn pGuildConfig)
+        public bool EditGuildConfig(EditGuildConfigIn pGuildConfig)
         {
-            _guildRepository.EditGuildConfig(pGuildConfig);
+            return _guildRepository.EditGuildConfig(pGuildConfig);
         }
 
         public GuildConfig GetGuildConfig(string pGuildID)
