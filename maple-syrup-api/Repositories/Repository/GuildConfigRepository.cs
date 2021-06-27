@@ -38,7 +38,8 @@ namespace maple_syrup_api.Repositories.Repository
         public bool EditGuildConfig(EditGuildConfigIn pGuildConfig)
         {
 
-            
+            if (!GuildConfigExists(pGuildConfig.GuildId))
+                return false;
             GuildConfig guild = new GuildConfig()
             {
                 Id = _context.GuildConfigs.AsNoTracking().FirstOrDefault(x => x.GuildId == pGuildConfig.GuildId).Id,
@@ -53,10 +54,7 @@ namespace maple_syrup_api.Repositories.Repository
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GuildConfigExists(pGuildConfig.GuildId))
-                    return false;
-                else
-                    throw;
+                return false;
             }
             return true;
         }
