@@ -49,7 +49,7 @@ namespace maple_syrup_api.Controllers
         public async Task<ActionResult<GetEventsFromStartDateOut>> CreateOrUpdateEvent(CreateOrUpdateEventIn pInput)
         {
 
-            var eventList = _eventService.GetAllFromStartDate(pInput.StartDate);
+            var eventList = _eventService.GetAllFromStartDate((System.DateTime) pInput.StartDate);
 
             var result = new GetEventsFromStartDateOut()
             {
@@ -64,6 +64,32 @@ namespace maple_syrup_api.Controllers
             };
 
             return result;
+
+        }
+
+        //Added part
+        [HttpPost]
+        public async Task<ActionResult> AddPlayerEvent(RequirementAddPlayerIn pAddPlayer)
+        {
+            Player newPlayer = new Player()
+            {
+                PlayerName = pAddPlayer.PlayerName,
+                Class = pAddPlayer.Class,
+                Job = pAddPlayer.Job,
+                DPSType = pAddPlayer.DPSType
+            };
+
+            _eventService.AddPlayer(newPlayer, pAddPlayer.EventId);
+
+            return null;
+
+        }
+
+        public async Task<ActionResult> RemovePlayerEvent(RequirementRemovePlayerIn pRemovePlayer)
+        {
+            _eventService.RemovePlayer(pRemovePlayer.PlayerName, pRemovePlayer.EventId);
+
+            return null;
 
         }
 

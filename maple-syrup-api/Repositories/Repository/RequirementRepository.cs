@@ -18,12 +18,12 @@ namespace maple_syrup_api.Repositories.Repository
             _context = pContext;
         }
 
-        public int Update(EventRequirement req) //This is kinda useless!
-        { //Error code => 0 : Success, 1 : Error
-            _context.EventRequirements.Update(req);
-            return 0;
-            //Return error code
-        }
+        //public int Update(EventRequirement req) //This is kinda useless!
+        //{ //Error code => 0 : Success, 1 : Error
+        //    _context.EventRequirements.Update(req);
+        //    return 0;
+        //    //Return error code
+        //}
 
     }
 }

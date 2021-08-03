@@ -11,7 +11,7 @@ namespace maple_syrup_api.Repositories.IRepository
     public interface IRequirementRepository : IBaseRepository<EventRequirement>
     {
 
-        int Update(EventRequirement req);
+        //int Update(EventRequirement req);
 
 
     }

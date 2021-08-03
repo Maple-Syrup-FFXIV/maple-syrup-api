@@ -15,6 +15,20 @@ namespace maple_syrup_api.Repositories.Repository
 
         protected virtual MapleSyrupContext Context { get { return _context; } }
 
+        public void AddOrUpdate(T entity)
+        {
+            var type = entity.GetType();
+            var property = type.GetProperties().FirstOrDefault(x => x.Name == "Id");
+            if (property != null && (int)property.GetValue(entity, null) > 0)
+            {
+                dbSet.Update(entity);
+            }
+            else
+            {
+                dbSet.Add(entity);
+            }
+        }
+
         public BaseRepository(MapleSyrupContext pContext)
         {
             _context = pContext;

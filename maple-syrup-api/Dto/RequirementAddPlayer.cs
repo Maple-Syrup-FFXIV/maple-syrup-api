@@ -7,7 +7,10 @@ namespace maple_syrup_api.Dto
 {
     public class RequirementAddPlayerIn
     {
-        public String PlayerName { get; set; }
+        public string PlayerName { get; set; }
+        public int Class { get; set; }
+        public int Job { get; set; }
+        public int? DPSType { get; set; }
         public int EventId { get; set; }
 
     }

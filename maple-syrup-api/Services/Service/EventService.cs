@@ -12,6 +12,7 @@ namespace maple_syrup_api.Services.Service
     {
         private readonly IEventRepository _eventRepository;
         private readonly IRequirementRepository _requirementRepository;
+        private readonly IRequirementService _requirementService;
 
         public EventService(IEventRepository pEventRepository)
         {
@@ -30,14 +31,14 @@ namespace maple_syrup_api.Services.Service
 
         //ADDED PART
 
-        public void AddPlayer(Player player, Event pEvent)
+        public void AddPlayer(Player player, int EventId)
         {
 
+            Event pEvent = _eventRepository.Get(EventId);
 
-
-            if (pEvent.Requirement.PlayerLimit >= 1)
+            if (pEvent.Requirement.PlayerCount < pEvent.Requirement.PlayerLimit)
             {
-                int result = RequirementService.AddPlayer(player, pEvent.Requirement);
+                int result = _requirementService.AddPlayer(player, pEvent.Requirement);
 
                 if (result == 0)
                 {
@@ -47,10 +48,8 @@ namespace maple_syrup_api.Services.Service
                     //The Requirements have already been changed, the only thing left is to add the Player to the list
 
                     pEvent.Requirement.Players.Add(player);//Add player
-                    pEvent.Requirement.PlayerLimit--;//Update Player count
-
+                
                     _requirementRepository.AddOrUpdate(pEvent.Requirement);
-
                 }
                 else if (result == 1)
                 {
@@ -76,12 +75,13 @@ namespace maple_syrup_api.Services.Service
             }
         }
 
-        public void RemovePlayer(String PlayerName, Event pEvent)
+        public void RemovePlayer(String PlayerName, int EventId)
         {
+            Event pEvent = _eventRepository.Get(EventId);
 
-            if (pEvent.Requirement.Players.Count != 0)
+            if (pEvent.Requirement.PlayerCount <= 0)
             {
-                int result = RequirementService.RemovePlayer(PlayerName, pEvent.Requirement);
+                int result = _requirementService.RemovePlayer(PlayerName, pEvent.Requirement);
 
                 if (result == 0)
                 {

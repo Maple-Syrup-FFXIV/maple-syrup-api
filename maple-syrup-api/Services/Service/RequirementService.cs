@@ -13,8 +13,9 @@ namespace maple_syrup_api.Services.Service
     public class RequirementService : IRequirementService
     {
         private readonly IRequirementRepository _requirementRepository;
+        private readonly IEventRepository _eventRepository;
 
-        public static int AddPlayer(Player player, EventRequirement pRequirement)
+        public int AddPlayer(Player player, EventRequirement pRequirement)
         {
             
             if (pRequirement.ClassRequirement[player.Class] > 0)
@@ -24,6 +25,7 @@ namespace maple_syrup_api.Services.Service
                 {
                     //We do not require only certain job
                     pRequirement.ClassRequirement[player.Class]--;
+                    pRequirement.PlayerCount++;
                     //ADD PLAYER TO REQUIREMENT AND SAVE REQUIREMENT/EVENT
                     return 0;
 
@@ -43,6 +45,7 @@ namespace maple_syrup_api.Services.Service
                                 pRequirement.PerJobRequirement[player.Job]--;
                                 pRequirement.ClassRequirement[player.Class]--;
                                 pRequirement.DPSTypeRequirement[(int) player.DPSType]--;
+                                pRequirement.PlayerCount++;
                                 return 0;
                             }
                             else
@@ -56,6 +59,7 @@ namespace maple_syrup_api.Services.Service
                         {
                             pRequirement.PerJobRequirement[player.Job]--;
                             pRequirement.ClassRequirement[player.Class]--;
+                            pRequirement.PlayerCount++;
                             return 0;
                         }
                     }
@@ -75,7 +79,7 @@ namespace maple_syrup_api.Services.Service
             }
         }
 
-        public static int RemovePlayer(String PlayerName, EventRequirement pRequirement)
+        public int RemovePlayer(String PlayerName, EventRequirement pRequirement)
         {
             int l = pRequirement.Players.Count;
             for (int i = 0; i < l; i++)
@@ -90,10 +94,46 @@ namespace maple_syrup_api.Services.Service
                     if (pRequirement.DPSRequiredByType && (removedPlayer.Class == 2)) pRequirement.DPSTypeRequirement[(int) removedPlayer.DPSType]++;//Add a new spot for DPSType if DPSType is true and player is a DPS
 
                     pRequirement.Players[i] = null;//removes player object from list
+                    pRequirement.PlayerCount--;
                     return 0;
                 }
             }
             return 1;
+
+        }
+
+        public int UpdateRequirement(EventRequirement NewRequirement, Event pEvent)
+        {
+            //In order to check if the new requirement will fit the present player list, we will
+            //add 1 by 1 the players to the NewRequirement and if an error ever comes up then we know it won't work
+
+            List<Player> PresentList = pEvent.Requirement.Players;
+
+            foreach (Player Player in PresentList)
+            {
+                int result = AddPlayer(Player, NewRequirement);//Add player to the new requirement set
+
+                if (result != 0)
+                {
+                    //In this case an error occured.
+                    return result;
+                }
+                else
+                {
+                    PresentList.Add(Player);
+                    //Add takes care of updating counterList
+                }
+
+            }
+
+            //If we get here, NewRequirement has been filled will all PLayers from pEvent. So we simply reassign the fields of pEvent and save into the database the new requirement/Event
+
+            pEvent.Requirement = NewRequirement;
+            _requirementRepository.AddOrUpdate(NewRequirement);
+            _eventRepository.AddOrUpdate(pEvent);
+            //The NewRequirement will have the same Id as the old one
+            return 0;
+
 
         }
 
