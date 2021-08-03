@@ -6,7 +6,7 @@ namespace maple_syrup_api.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //sorry it was useless
+            //sorry it was useless bruhhh
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

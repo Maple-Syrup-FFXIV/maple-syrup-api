@@ -27,10 +27,9 @@ namespace maple_syrup_api.Controllers
         [HttpPost]
         public async Task<ActionResult<GetEventsFromStartDateOut>> GetEventsFromStartDate(GetEventsFromStartDateIn pInput)
         {
-            var result = new GetEventsFromStartDateOut();
             var eventList = _eventService.GetAllFromStartDate(pInput.StartDate);
 
-            result = new GetEventsFromStartDateOut()
+            var result = new GetEventsFromStartDateOut()
             {
                 EventList = eventList.Select(s => new PartialEventGetEventsFromStartDate()
                 {
@@ -43,6 +42,29 @@ namespace maple_syrup_api.Controllers
             };
 
             return result;
+        }
+
+        // POST: api/Events
+        [HttpPost]
+        public async Task<ActionResult<GetEventsFromStartDateOut>> CreateOrUpdateEvent(CreateOrUpdateEventIn pInput)
+        {
+
+            var eventList = _eventService.GetAllFromStartDate(pInput.StartDate);
+
+            var result = new GetEventsFromStartDateOut()
+            {
+                EventList = eventList.Select(s => new PartialEventGetEventsFromStartDate()
+                {
+                    Id = s.Id,
+                    StartDate = s.StartDate,
+                    EndDate = s.EndDate,
+                    EventStatus = s.EventStatus,
+                    EventType = s.EventType
+                }).ToList()
+            };
+
+            return result;
+
         }
 
 

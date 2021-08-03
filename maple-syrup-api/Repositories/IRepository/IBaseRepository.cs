@@ -20,6 +20,7 @@ namespace maple_syrup_api.Repositories.IRepository
          string includeProperties = null
          );
 
+        public void AddOrUpdate(T entity);
         void Add(T entity);
 
         void Remove(int id);
