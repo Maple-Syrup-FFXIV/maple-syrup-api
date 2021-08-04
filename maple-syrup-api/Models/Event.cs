@@ -12,7 +12,7 @@ namespace maple_syrup_api.Models
         //public User Users List<User>;
         public int? RequirementId { get; set; }
         public EventRequirement Requirement { get; set; }
-        public String FightName { get; set; }
+        public string FightName { get; set; }
     }
 
 

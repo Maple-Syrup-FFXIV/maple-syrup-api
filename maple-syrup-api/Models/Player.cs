@@ -8,10 +8,46 @@ namespace maple_syrup_api.Models
     public class Player
     {
         public string PlayerName { get; set; }
-        public int Class { get; set; }
-        public int Job { get; set; }
-        public int? DPSType { get; set; }
+        public ClassType Class { get; set; }
+        public JobType Job { get; set; }
+        public DPSType DPSType { get; set; }
+    }
 
+    public enum DPSType
+    {
+        MELEE,
+        RANGED,
+        CASTER
+
+    }
+
+    public enum ClassType
+    {
+        TANK,
+        HEALER,
+        DPS
+    }
+
+    public enum JobType
+    {
+        PLD,
+        WAR,
+        DRK,
+        GNB,
+        WHM,
+        SCH,
+        AST,
+        MNK,
+        DRG,
+        NIN,
+        SAM,
+        BRD,
+        MCH,
+        DNC,
+        BLM,
+        SMN,
+        RDM,
+        BLUE
 
     }
 }

@@ -46,24 +46,44 @@ namespace maple_syrup_api.Controllers
 
         // POST: api/Events
         [HttpPost]
-        public async Task<ActionResult<GetEventsFromStartDateOut>> CreateOrUpdateEvent(CreateOrUpdateEventIn pInput)
+        public async Task<ActionResult<GetEventsFromStartDateOut>> CreateEvent(CreateEventIn pInput)
         {
+            //For now Id will be requested by the caller, but could be generated
 
-            var eventList = _eventService.GetAllFromStartDate((System.DateTime) pInput.StartDate);
-
-            var result = new GetEventsFromStartDateOut()
-            {
-                EventList = eventList.Select(s => new PartialEventGetEventsFromStartDate()
-                {
-                    Id = s.Id,
-                    StartDate = s.StartDate,
-                    EndDate = s.EndDate,
-                    EventStatus = s.EventStatus,
-                    EventType = s.EventType
-                }).ToList()
+            Event nEvent = new Event() 
+            { 
+                Id = pInput.Id,
+                StartDate = pInput.StartDate,
+                EndDate = pInput.EndDate,
+                EventType = (EventType) pInput.EventType,
+                EventStatus = (EventStatus) 0,
+                FightName = pInput.FightName
             };
 
-            return result;
+            EventRequirement nRequirement = new EventRequirement()
+            {
+                Id = pInput.RId,
+                Event = nEvent,
+                EventId = nEvent.Id,
+                PreciseJob = pInput.PreciseJob,
+                OnePerJob = pInput.OnePerJob,
+                DPSRequiredByType = pInput.DPSRequiredByType,
+                AllowBlueMage = pInput.AllowBlueMage,
+                DPSTypeRequirement = pInput.DPSTypeRequirement,
+                ClassRequirement = pInput.ClassRequirement,
+                PerJobRequirement = pInput.PerJobRequirement,
+                PlayerLimit = pInput.PlayerLimit,
+                PlayerCount = pInput.PlayerCount,
+                MinILevel = pInput.MinILevel,
+                MinLevel = pInput.MinLevel,
+                Players = new List<Player>(),
+            };
+            nEvent.Requirement = nRequirement;
+            nEvent.RequirementId = nRequirement.Id;
+
+            _eventService.CreateEvent(nEvent, nRequirement);
+
+            return null;
 
         }
 

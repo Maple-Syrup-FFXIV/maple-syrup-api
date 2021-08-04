@@ -135,5 +135,14 @@ namespace maple_syrup_api.Services.Service
 
         }
 
+        public void CreateEvent(Event pEvent, EventRequirement pRequirement)
+        {
+            //Have to generate new Requirement and assign Ids
+
+            _eventRepository.Add(pEvent);
+            _requirementRepository.Add(pRequirement);
+
+        }
+
     }
 }

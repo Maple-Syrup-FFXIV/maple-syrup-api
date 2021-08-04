@@ -15,5 +15,7 @@ namespace maple_syrup_api.Services.IService
         void RemovePlayer(String PlayerName, int EventId);
 
         Event UpdateEvent(UpdateEventIn NewEvent);
+
+        void CreateEvent(Event nEvent, EventRequirement pRequirement);
     }
 }

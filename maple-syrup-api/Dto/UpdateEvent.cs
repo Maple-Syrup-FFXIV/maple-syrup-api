@@ -13,7 +13,7 @@ namespace maple_syrup_api.Dto
         public DateTime? EndDate { get; set; }
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
-        public String FightName { get; set; }
+        public string FightName { get; set; }
     }
 
     public class UpdateEventOut
@@ -23,7 +23,7 @@ namespace maple_syrup_api.Dto
         public DateTime? EndDate { get; set; }
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
-        public String FightName { get; set; }
+        public string FightName { get; set; }
 
     }
 }
