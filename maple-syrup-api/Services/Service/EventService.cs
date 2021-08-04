@@ -1,4 +1,5 @@
 ﻿using maple_syrup_api.Models;
+using maple_syrup_api.Dto;
 using maple_syrup_api.Repositories.IRepository;
 using maple_syrup_api.Services.IService;
 using System;
@@ -102,6 +103,36 @@ namespace maple_syrup_api.Services.Service
             {
                 //throw new MappleException("CannotRemoveFromEmptyList");
             }
+        }
+
+        public Event UpdateEvent(UpdateEventIn NewEvent) 
+        {
+
+            int Id = NewEvent.Id;
+
+            Event PastEvent = _eventRepository.Get(Id);
+
+            Event nEvent = new Event()
+            {
+                //Stuff that changes
+                StartDate = NewEvent.StartDate,
+                EndDate = NewEvent.EndDate,
+                EventType = NewEvent.EventType,
+                EventStatus = NewEvent.EventStatus,
+                FightName = NewEvent.FightName,
+                //Old stuff that doesn't change
+                Id = PastEvent.Id,
+                Requirement = PastEvent.Requirement,
+                RequirementId = PastEvent.RequirementId,
+
+            };
+
+            _eventRepository.AddOrUpdate(nEvent);//Update event in database
+
+            return nEvent;
+
+            
+
         }
 
     }

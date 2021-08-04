@@ -102,11 +102,11 @@ namespace maple_syrup_api.Services.Service
 
         }
 
-        public int UpdateRequirement(EventRequirement NewRequirement, Event pEvent)
+        public int UpdateRequirement(EventRequirement NewRequirement, int EventId)
         {
             //In order to check if the new requirement will fit the present player list, we will
-            //add 1 by 1 the players to the NewRequirement and if an error ever comes up then we know it won't work
-
+            //add 1 by 1 the players to the NewRequirement and if an error ever comes up then we know it won't work\
+            Event pEvent = _eventRepository.Get(EventId);
             List<Player> PresentList = pEvent.Requirement.Players;
 
             foreach (Player Player in PresentList)
@@ -127,7 +127,9 @@ namespace maple_syrup_api.Services.Service
             }
 
             //If we get here, NewRequirement has been filled will all PLayers from pEvent. So we simply reassign the fields of pEvent and save into the database the new requirement/Event
-
+            NewRequirement.Id = pEvent.Requirement.Id;
+            NewRequirement.Event = pEvent;
+            NewRequirement.EventId = pEvent.Id;
             pEvent.Requirement = NewRequirement;
             _requirementRepository.AddOrUpdate(NewRequirement);
             _eventRepository.AddOrUpdate(pEvent);
@@ -135,6 +137,11 @@ namespace maple_syrup_api.Services.Service
             return 0;
 
 
+        }
+
+        public EventRequirement GetRequirement(int EventId)
+        {
+            return _eventRepository.Get(EventId).Requirement;
         }
 
 

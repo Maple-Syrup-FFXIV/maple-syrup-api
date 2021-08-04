@@ -17,7 +17,7 @@ namespace maple_syrup_api.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
-
+        private readonly IRequirementService _requirementService;
         public EventsController( IEventService pEventService)
         {
             _eventService = pEventService;
@@ -84,7 +84,7 @@ namespace maple_syrup_api.Controllers
             return null;
 
         }
-
+        [HttpPost]
         public async Task<ActionResult> RemovePlayerEvent(RequirementRemovePlayerIn pRemovePlayer)
         {
             _eventService.RemovePlayer(pRemovePlayer.PlayerName, pRemovePlayer.EventId);
@@ -92,91 +92,162 @@ namespace maple_syrup_api.Controllers
             return null;
 
         }
+        [HttpPost]
+        public async Task<ActionResult> UpdateEvent(UpdateEventIn pInput)
+        {
+            Event rEvent = _eventService.UpdateEvent(pInput);
+            UpdateEventOut result = new UpdateEventOut
+            {
+                StartDate = rEvent.StartDate,
+                EndDate = rEvent.EndDate,
+                EventType = rEvent.EventType,
+                EventStatus = rEvent.EventStatus,
+                FightName = rEvent.FightName,
+                Id = rEvent.Id
+            };
+
+            return null;
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> GetRequirement(GetRequirementIn pInput)
+        {
+            EventRequirement rReq = _requirementService.GetRequirement(pInput.EventId);
+
+            GetRequirementOut result = new GetRequirementOut()
+            {
+                PreciseJob = rReq.PreciseJob,
+                OnePerJob= rReq.OnePerJob,
+                DPSRequiredByType = rReq.DPSRequiredByType,
+                AllowBlueMage = rReq.AllowBlueMage,
+                DPSTypeRequirement = rReq.DPSTypeRequirement,
+                ClassRequirement = rReq.ClassRequirement,
+                PerJobRequirement = rReq.PerJobRequirement,
+                Players = rReq.Players,
+                PlayerLimit = rReq.PlayerLimit,
+                PlayerCount = rReq.PlayerCount,
+                MinILevel = rReq.MinILevel,
+                MinLevel = rReq.MinLevel
+            };
+
+            return null;
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateRequirement(UpdateRequirementIn pInput, int EventId)
+        {
 
 
 
-        //// GET: api/Events
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
-        //{
-        //    return await _context.Events.ToListAsync();
-        //}
+            EventRequirement newRequirement = new EventRequirement()
+            {
+                Id = 0,//Will have to set this up in Service
+                Event = null,//Willhave to set this up in Service
+                EventId = EventId,
+                PreciseJob = pInput.PreciseJob,
+                OnePerJob = pInput.OnePerJob,
+                DPSRequiredByType = pInput.DPSRequiredByType,
+                AllowBlueMage = pInput.AllowBlueMage,
+                DPSTypeRequirement = pInput.DPSTypeRequirement,
+                ClassRequirement = pInput.ClassRequirement,
+                PerJobRequirement = pInput.PerJobRequirement,
+                Players = new List<Player>(),
+                PlayerLimit = pInput.PlayerLimit,
+                PlayerCount = 0,
+                MinILevel = pInput.MinILevel,
+                MinLevel = pInput.MinLevel
+            };
 
-        //// GET: api/Events/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Event>> GetEvent(int id)
-        //{
-        //    var @event = await _context.Events.FindAsync(id);
+            int result = _requirementService.UpdateRequirement(newRequirement, EventId);
+            //Will have to do something depending on result
+            return null;
 
-        //    if (@event == null)
-        //    {
-        //        return NotFound();
-        //    }
+        }
 
-        //    return @event;
-        //}
 
-        //// PUT: api/Events/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutEvent(int id, Event @event)
-        //{
-        //    if (id != @event.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+            //// GET: api/Events
+            //[HttpGet]
+            //public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
+            //{
+            //    return await _context.Events.ToListAsync();
+            //}
 
-        //    _context.Entry(@event).State = EntityState.Modified;
+            //// GET: api/Events/5
+            //[HttpGet("{id}")]
+            //public async Task<ActionResult<Event>> GetEvent(int id)
+            //{
+            //    var @event = await _context.Events.FindAsync(id);
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!EventExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            //    if (@event == null)
+            //    {
+            //        return NotFound();
+            //    }
 
-        //    return NoContent();
-        //}
+            //    return @event;
+            //}
 
-        //// POST: api/Events
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Event>> PostEvent(Event @event)
-        //{
-        //    _context.Events.Add(@event);
-        //    await _context.SaveChangesAsync();
+            //// PUT: api/Events/5
+            //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            //[HttpPut("{id}")]
+            //public async Task<IActionResult> PutEvent(int id, Event @event)
+            //{
+            //    if (id != @event.Id)
+            //    {
+            //        return BadRequest();
+            //    }
 
-        //    return CreatedAtAction("GetEvent", new { id = @event.Id }, @event);
-        //}
+            //    _context.Entry(@event).State = EntityState.Modified;
 
-        //// DELETE: api/Events/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteEvent(int id)
-        //{
-        //    var @event = await _context.Events.FindAsync(id);
-        //    if (@event == null)
-        //    {
-        //        return NotFound();
-        //    }
+            //    try
+            //    {
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!EventExists(id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
 
-        //    _context.Events.Remove(@event);
-        //    await _context.SaveChangesAsync();
+            //    return NoContent();
+            //}
 
-        //    return NoContent();
-        //}
+            //// POST: api/Events
+            //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            //[HttpPost]
+            //public async Task<ActionResult<Event>> PostEvent(Event @event)
+            //{
+            //    _context.Events.Add(@event);
+            //    await _context.SaveChangesAsync();
 
-        //private bool EventExists(int id)
-        //{
-        //    return _context.Events.Any(e => e.Id == id);
-        //}
+            //    return CreatedAtAction("GetEvent", new { id = @event.Id }, @event);
+            //}
+
+            //// DELETE: api/Events/5
+            //[HttpDelete("{id}")]
+            //public async Task<IActionResult> DeleteEvent(int id)
+            //{
+            //    var @event = await _context.Events.FindAsync(id);
+            //    if (@event == null)
+            //    {
+            //        return NotFound();
+            //    }
+
+            //    _context.Events.Remove(@event);
+            //    await _context.SaveChangesAsync();
+
+            //    return NoContent();
+            //}
+
+            //private bool EventExists(int id)
+            //{
+            //    return _context.Events.Any(e => e.Id == id);
+            //}
+        }
     }
-}

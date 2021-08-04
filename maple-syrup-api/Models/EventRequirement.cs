@@ -29,6 +29,8 @@ namespace maple_syrup_api.Models
 
         public int PlayerLimit { get; set; }
         public int PlayerCount { get; set; }
+        public int MinILevel { get; set; }//Not yet implemented
+        public int MinLevel { get; set; }//Not yet implemented
 
     }
 }
