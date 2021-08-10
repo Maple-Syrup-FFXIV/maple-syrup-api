@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace maple_syrup_api.Repositories.Repository
 {
@@ -24,6 +25,20 @@ namespace maple_syrup_api.Repositories.Repository
         public void Add(T entity)
         {
             dbSet.Add(entity);
+        }
+
+        public void AddOrUpdate(T entity)
+        {
+            var type = entity.GetType();
+            var property = type.GetProperties().FirstOrDefault(x => x.Name == "Id");
+            if (property != null && (int)property.GetValue(entity) > 0)
+            {
+                dbSet.Update(entity);
+            }
+            else
+            {
+                dbSet.Add(entity);
+            }
         }
 
         public T Get(int id)
@@ -57,7 +72,7 @@ namespace maple_syrup_api.Repositories.Repository
 
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
         {
-            IQueryable<T> query = dbSet;
+            IQueryable<T> query = dbSet ?? new List<T>().AsQueryable<T>();
 
             if (filter != null)
             {
@@ -89,6 +104,16 @@ namespace maple_syrup_api.Repositories.Repository
         public void RemoveRange(IEnumerable<T> entity)
         {
             dbSet.RemoveRange(entity);
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

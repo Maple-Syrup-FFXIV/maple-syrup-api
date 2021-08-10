@@ -1,4 +1,5 @@
 using maple_syrup_api.Context;
+using maple_syrup_api.Helpers;
 using maple_syrup_api.Repositories.IRepository;
 using maple_syrup_api.Repositories.Repository;
 using maple_syrup_api.Services.IService;
@@ -28,21 +29,9 @@ namespace maple_syrup_api
 
             AddServiceAndRepositories(services);
 
-            services.AddControllers();
-
-            services.AddDbContext<MapleSyrupContext>(options =>
-            {
-                options.UseMySQL(Configuration.GetConnectionString("DevConnection"));
-                options.UseLazyLoadingProxies();
-            });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "maple_syrup_api", Version = "v1" });
-            });
-
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
+                options.AddDefaultPolicy( builder =>
                 {
                     builder.AllowAnyOrigin();
                     builder.AllowAnyMethod();
@@ -50,8 +39,17 @@ namespace maple_syrup_api
                 });
             });
 
-         
+            services.AddControllers();
 
+            services.AddDbContext<MapleSyrupContext>(options =>
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();
+            });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "maple_syrup_api", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +70,10 @@ namespace maple_syrup_api
 
             app.UseAuthorization();
 
+            app.UseMiddleware<AuthenticationMiddleWare>();
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -80,6 +82,18 @@ namespace maple_syrup_api
 
 
         private void AddServiceAndRepositories(IServiceCollection services) {
+
+            //Config
+            services.AddSingleton(Configuration);
+
+
+            // JWT
+            services.AddTransient<IJwtUtils, JwtUtils>();
+
+            //User
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserTokenRepository, UserTokenRepository>();
 
             //Event
             services.AddTransient<IEventRepository, EventRepository>();

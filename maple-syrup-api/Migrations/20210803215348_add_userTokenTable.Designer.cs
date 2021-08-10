@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using maple_syrup_api.Context;
@@ -9,9 +10,10 @@ using maple_syrup_api.Context;
 namespace maple_syrup_api.Migrations
 {
     [DbContext(typeof(MapleSyrupContext))]
-    partial class MapleSyrupContextModelSnapshot : ModelSnapshot
+    [Migration("20210803215348_add_userTokenTable")]
+    partial class add_userTokenTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +96,9 @@ namespace maple_syrup_api.Migrations
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
@@ -113,7 +118,7 @@ namespace maple_syrup_api.Migrations
             modelBuilder.Entity("maple_syrup_api.Models.UserToken", b =>
                 {
                     b.HasOne("maple_syrup_api.Models.User", "User")
-                        .WithMany("UserTokens")
+                        .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -123,7 +128,7 @@ namespace maple_syrup_api.Migrations
 
             modelBuilder.Entity("maple_syrup_api.Models.User", b =>
                 {
-                    b.Navigation("UserTokens");
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace maple_syrup_api.Models
 {
@@ -9,6 +10,7 @@ namespace maple_syrup_api.Models
         public DateTime? EndDate { get; set; }
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
+
     }
 
 

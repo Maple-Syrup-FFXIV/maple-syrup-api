@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using maple_syrup_api.Context;
@@ -9,9 +10,10 @@ using maple_syrup_api.Context;
 namespace maple_syrup_api.Migrations
 {
     [DbContext(typeof(MapleSyrupContext))]
-    partial class MapleSyrupContextModelSnapshot : ModelSnapshot
+    [Migration("20210803015745_postgreSQL_Initialization")]
+    partial class postgreSQL_Initialization
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,46 +86,53 @@ namespace maple_syrup_api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("maple_syrup_api.Models.UserToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserTokens");
-                });
-
-            modelBuilder.Entity("maple_syrup_api.Models.UserToken", b =>
-                {
-                    b.HasOne("maple_syrup_api.Models.User", "User")
-                        .WithMany("UserTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("maple_syrup_api.Models.User", b =>
                 {
-                    b.Navigation("UserTokens");
+                    b.OwnsMany("maple_syrup_api.Models.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                            b1.Property<DateTime>("Created")
+                                .HasColumnType("timestamp without time zone");
+
+                            b1.Property<string>("CreatedByIp")
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime>("Expires")
+                                .HasColumnType("timestamp without time zone");
+
+                            b1.Property<string>("ReasonRevoked")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("ReplacedByToken")
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("Revoked")
+                                .HasColumnType("timestamp without time zone");
+
+                            b1.Property<string>("RevokedByIp")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Token")
+                                .HasColumnType("text");
+
+                            b1.Property<int>("UserId")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("UserId");
+
+                            b1.ToTable("RefreshToken");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

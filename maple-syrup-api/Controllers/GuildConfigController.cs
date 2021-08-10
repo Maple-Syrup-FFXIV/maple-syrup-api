@@ -19,7 +19,6 @@ namespace maple_syrup_api.Controllers
         {
             _guildService = pGuildConfigService;
         }
-
         // GET: api/GuildConfig
         [HttpGet]
         public async Task<ActionResult<GetGuildConfigsOut>> GetGuildConfigs()

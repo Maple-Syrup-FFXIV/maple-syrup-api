@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace maple_syrup_api.Repositories.IRepository
 {
@@ -22,10 +23,16 @@ namespace maple_syrup_api.Repositories.IRepository
 
         void Add(T entity);
 
+        void AddOrUpdate(T entity);
+
         void Remove(int id);
 
         void Remove(T entity);
 
         void RemoveRange(IEnumerable<T> entity);
+
+        void Save();
+
+        Task SaveAsync();
     }
 }
