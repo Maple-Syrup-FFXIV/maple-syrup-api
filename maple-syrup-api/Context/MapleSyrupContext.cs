@@ -18,6 +18,10 @@ namespace maple_syrup_api.Context
         public DbSet<GuildConfig> GuildConfigs { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<UserToken> UserTokens { get; set; }
+        public DbSet<EventRequirement> EventRequirements { get; set; }
+
+        public DbSet<Player> Players { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         { 

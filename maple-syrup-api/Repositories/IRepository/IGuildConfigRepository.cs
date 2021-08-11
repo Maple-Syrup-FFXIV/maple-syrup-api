@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace maple_syrup_api.Repositories.IRepository
 {
-    public interface IGuildConfigRepository
+    public interface IGuildConfigRepository : IBaseRepository<GuildConfig>
     {
         List<GuildConfig> GetGuildConfigs();
 

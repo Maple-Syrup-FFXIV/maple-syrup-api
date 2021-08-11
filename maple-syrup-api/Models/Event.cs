@@ -10,6 +10,10 @@ namespace maple_syrup_api.Models
         public DateTime? EndDate { get; set; }
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
+        //public User Users List<User>;
+        public int? RequirementId { get; set; }
+        public virtual EventRequirement Requirement { get; set; }
+
 
     }
 
