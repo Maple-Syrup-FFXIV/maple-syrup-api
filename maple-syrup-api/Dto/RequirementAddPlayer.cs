@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using maple_syrup_api.Models;
 
 namespace maple_syrup_api.Dto
 {
     public class RequirementAddPlayerIn
     {
         public string PlayerName { get; set; }
-        public int Class { get; set; }
-        public int Job { get; set; }
-        public int? DPSType { get; set; }
+        public ClassType Class { get; set; }
+        public JobType Job { get; set; }
+        public DPSType DPSType { get; set; }
         public int EventId { get; set; }
 
     }

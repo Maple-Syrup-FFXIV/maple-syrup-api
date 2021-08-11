@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace maple_syrup_api.Services.IService
 {
-    interface IRequirementService
+    public interface IRequirementService
     {
 
         int AddPlayer(Player player, EventRequirement pRequirement);
@@ -18,6 +18,8 @@ namespace maple_syrup_api.Services.IService
         //succesful. The Event will call these methods, and will take care of what to do if it returns true or false.
 
         //int UpdatePlayer(Player player, EventRequirement pRequirement);
-        int UpdateRequirement(EventRequirement NewRequirement, Event pEvent);
+        int UpdateRequirement(EventRequirement NewRequirement, int EventId);
+
+        EventRequirement GetRequirement(int EventId);
     }
 }

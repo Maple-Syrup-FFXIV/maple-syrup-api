@@ -99,6 +99,11 @@ namespace maple_syrup_api
             services.AddTransient<IEventRepository, EventRepository>();
             services.AddTransient<IEventService, EventService>();
 
+            //EventRequirement
+            services.AddTransient<IRequirementRepository, RequirementRepository>();
+            services.AddTransient<IRequirementService, RequirementService>();
+
+
             //GuildConfig
             services.AddTransient<IGuildConfigRepository, GuildConfigRepository>();
             services.AddTransient<IGuildConfigService, GuildConfigService>();

@@ -1,4 +1,5 @@
 ﻿using maple_syrup_api.Models;
+using maple_syrup_api.Dto;
 using maple_syrup_api.Repositories.IRepository;
 using maple_syrup_api.Services.IService;
 using System;
@@ -14,9 +15,11 @@ namespace maple_syrup_api.Services.Service
         private readonly IRequirementRepository _requirementRepository;
         private readonly IRequirementService _requirementService;
 
-        public EventService(IEventRepository pEventRepository)
+        public EventService(IEventRepository pEventRepository,IRequirementRepository pRequirementRepository,IRequirementService pRequirementService)
         {
             _eventRepository = pEventRepository;
+            _requirementRepository = pRequirementRepository;
+            _requirementService = pRequirementService;
         }
 
         public List<Event> GetAllFromStartDate(DateTime pFilterStartDate)
@@ -50,6 +53,8 @@ namespace maple_syrup_api.Services.Service
                     pEvent.Requirement.Players.Add(player);//Add player
                 
                     _requirementRepository.AddOrUpdate(pEvent.Requirement);
+
+                    _requirementRepository.Save();
                 }
                 else if (result == 1)
                 {
@@ -102,6 +107,47 @@ namespace maple_syrup_api.Services.Service
             {
                 //throw new MappleException("CannotRemoveFromEmptyList");
             }
+        }
+
+        public Event UpdateEvent(UpdateEventIn NewEvent) 
+        {
+
+            int Id = NewEvent.Id;
+
+            Event PastEvent = _eventRepository.Get(Id);
+
+            Event nEvent = new Event()
+            {
+                //Stuff that changes
+                StartDate = NewEvent.StartDate,
+                EndDate = NewEvent.EndDate,
+                EventType = NewEvent.EventType,
+                EventStatus = NewEvent.EventStatus,
+                FightName = NewEvent.FightName,
+                //Old stuff that doesn't change
+                Id = PastEvent.Id,
+                Requirement = PastEvent.Requirement,
+                RequirementId = PastEvent.RequirementId,
+
+            };
+
+            _eventRepository.AddOrUpdate(nEvent);//Update event in database
+
+            return nEvent;
+
+            
+
+        }
+
+        public void CreateEvent(Event pEvent, EventRequirement pRequirement)
+        {
+            //Have to generate new Requirement and assign Ids
+
+            _eventRepository.Add(pEvent);
+            _requirementRepository.Add(pRequirement);
+
+            _eventRepository.Save();
+
         }
 
     }
