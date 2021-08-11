@@ -83,7 +83,7 @@ namespace maple_syrup_api.Controllers
 
             _eventService.CreateEvent(nEvent, nRequirement);
 
-            return null;
+            return Ok(true);
 
         }
 
@@ -101,7 +101,7 @@ namespace maple_syrup_api.Controllers
 
             _eventService.AddPlayer(newPlayer, pAddPlayer.EventId);
 
-            return null;
+            return Ok(true);
 
         }
         [HttpPost]
@@ -109,7 +109,7 @@ namespace maple_syrup_api.Controllers
         {
             _eventService.RemovePlayer(pRemovePlayer.PlayerName, pRemovePlayer.EventId);
 
-            return null;
+            return Ok(true);
 
         }
         [HttpPost]
@@ -126,7 +126,7 @@ namespace maple_syrup_api.Controllers
                 Id = rEvent.Id
             };
 
-            return null;
+            return Ok(result);
 
         }
         [HttpPost]
@@ -149,8 +149,8 @@ namespace maple_syrup_api.Controllers
                 MinILevel = rReq.MinILevel,
                 MinLevel = rReq.MinLevel
             };
-
-            return null;
+            
+            return Ok(result);
 
         }
 
@@ -181,7 +181,7 @@ namespace maple_syrup_api.Controllers
 
             int result = _requirementService.UpdateRequirement(newRequirement, EventId);
             //Will have to do something depending on result
-            return null;
+            return Ok(result);
 
         }
 
