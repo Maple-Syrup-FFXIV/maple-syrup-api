@@ -10,6 +10,8 @@ using maple_syrup_api.Models;
 using maple_syrup_api.Services.IService;
 using maple_syrup_api.Dto;
 using maple_syrup_api.Repositories.IRepository;
+using maple_syrup_api.Exceptions;
+using maple_syrup_api.Dto.EventManagement;
 
 namespace maple_syrup_api.Controllers
 {
@@ -30,6 +32,7 @@ namespace maple_syrup_api.Controllers
         }
 
         // POST: api/Events
+        
         [HttpGet]
         public ActionResult<GetEventsFromStartDateOut> GetEventsFromStartDate(GetEventsFromStartDateIn pInput)
         {
@@ -50,6 +53,7 @@ namespace maple_syrup_api.Controllers
             return result;
         }
         // POST: api/Events
+        
         [HttpPost]
         public ActionResult<GetEventsFromStartDateOut> CreateEvent(CreateEventIn pInput)
         {
@@ -62,7 +66,8 @@ namespace maple_syrup_api.Controllers
                 EndDate = pInput.EndDate,
                 EventType = (EventType) pInput.EventType,
                 EventStatus = (EventStatus) 0,
-                FightName = pInput.FightName
+                FightName = pInput.FightName,
+                OwnerId = pInput.OwnerId
             };
 
             EventRequirement nRequirement = new EventRequirement()
@@ -92,6 +97,7 @@ namespace maple_syrup_api.Controllers
 
         }
         //Added part
+        
         [HttpPost]
         public ActionResult<bool> AddPlayerEvent(RequirementAddPlayerIn pAddPlayer)
         {
@@ -117,19 +123,35 @@ namespace maple_syrup_api.Controllers
             return Ok(true);
 
         }
+        
         [HttpPost]
         public ActionResult<bool> RemovePlayerEvent(RequirementRemovePlayerIn pRemovePlayer)
         {
+
             Player Player = _playerService.getPlayer(pRemovePlayer.PlayerId);
             _eventService.RemovePlayer(Player, pRemovePlayer.EventId);
-            _userService.RemovePlayer(Player, pRemovePlayer.EventId);
+            _userService.RemovePlayer(Player.Id, pRemovePlayer.EventId);
             _playerService.RemovePlayer(Player);
             return Ok(true);
 
         }
+
         [HttpPost]
-        public async Task<ActionResult> UpdateEvent(UpdateEventIn pInput)
+        public ActionResult<bool> KickPlayerEvent(RequirementRemovePlayerIn pRemovePlayer)
         {
+            //Similar to removePLayeRevent, but can be used by Owner of an event to kick a player
+            if (pRemovePlayer.UserId != _eventService.GetIdOwner(pRemovePlayer.EventId)) throw new MapleException("You do not have permission to change this");
+
+            return RemovePlayerEvent(pRemovePlayer);
+
+        }
+
+        [HttpPost]
+        public ActionResult<bool> UpdateEvent(UpdateEventIn pInput)
+        {
+
+            if (pInput.UserId != _eventService.GetIdOwner(pInput.EventId)) throw new MapleException("You do not have permission to change this");
+
             Event rEvent = _eventService.UpdateEvent(pInput);
             UpdateEventOut result = new UpdateEventOut
             {
@@ -172,16 +194,16 @@ namespace maple_syrup_api.Controllers
 
 
         [HttpPost]
-        public ActionResult<int> UpdateRequirement(UpdateRequirementIn pInput, int EventId)
+        public ActionResult<int> UpdateRequirement(UpdateRequirementIn pInput)
         {
 
-
+            if (pInput.UserId != _eventService.GetIdOwner(pInput.EventId)) throw new MapleException("You do not have permission to change this");
 
             EventRequirement newRequirement = new EventRequirement()
             {
                 Id = 0,//Will have to set this up in Service
                 Event = null,//Willhave to set this up in Service
-                EventId = EventId,
+                EventId = pInput.EventId,
                 PreciseJob = pInput.PreciseJob,
                 OnePerJob = pInput.OnePerJob,
                 DPSRequiredByType = pInput.DPSRequiredByType,
@@ -196,7 +218,7 @@ namespace maple_syrup_api.Controllers
                 MinLevel = pInput.MinLevel
             };
 
-            int result = _requirementService.UpdateRequirement(newRequirement, EventId);
+            int result = _requirementService.UpdateRequirement(newRequirement, pInput.EventId);
             //Will have to do something depending on result
             return Ok(result);
 
@@ -206,6 +228,8 @@ namespace maple_syrup_api.Controllers
 
         public ActionResult<bool> DeleteEvent(DeleteEventIn pInput)
         {
+            if (pInput.UserId != _eventService.GetIdOwner(pInput.EventId)) throw new MapleException("You do not have permission to change this");
+
             _eventService.DeleteEvent(pInput.EventId);
 
             return Ok(true);

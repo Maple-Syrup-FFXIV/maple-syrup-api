@@ -15,6 +15,7 @@ namespace maple_syrup_api.Dto
         public int EventType { get; set; }
         public int EventStatus { get; set; }
         public string FightName { get; set; }
+        public int OwnerId { get; set; }
 
 
         //Part necessary for Requirement

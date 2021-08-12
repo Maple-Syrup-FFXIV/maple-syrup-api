@@ -7,7 +7,8 @@ namespace maple_syrup_api.Dto
 {
     public class UpdateRequirementIn
     {
-
+        public int EventId { get; set; }
+        public int UserId { get; set; }
         public bool PreciseJob { get; set; }
         public bool OnePerJob { get; set; }
         public bool DPSRequiredByType { get; set; }

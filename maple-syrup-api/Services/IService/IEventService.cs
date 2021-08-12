@@ -17,5 +17,7 @@ namespace maple_syrup_api.Services.IService
         Event UpdateEvent(UpdateEventIn NewEvent);
 
         void CreateEvent(Event nEvent, EventRequirement pRequirement);
+        int GetIdOwner(int EventId);
+        void DeleteEvent(int EventId);
     }
 }

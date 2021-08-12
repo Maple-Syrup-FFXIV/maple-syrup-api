@@ -8,12 +8,13 @@ namespace maple_syrup_api.Dto
 {
     public class UpdateEventIn
     {
-        public int Id { get; set; }
+        public int EventId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
         public string FightName { get; set; }
+        public int UserId { get; set; }
     }
 
     public class UpdateEventOut

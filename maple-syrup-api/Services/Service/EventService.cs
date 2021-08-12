@@ -120,7 +120,7 @@ namespace maple_syrup_api.Services.Service
         public Event UpdateEvent(UpdateEventIn NewEvent) 
         {
 
-            int Id = NewEvent.Id;
+            int Id = NewEvent.EventId;
 
             Event PastEvent = _eventRepository.Get(Id);
 
@@ -175,6 +175,11 @@ namespace maple_syrup_api.Services.Service
             _requirementRepository.Remove(rEvent.Requirement);
             _eventRepository.Save();
             _requirementRepository.Save();
+        }
+
+        public int GetIdOwner(int EventId)
+        {
+            return _eventRepository.Get(EventId).OwnerId;
         }
     }
 }
