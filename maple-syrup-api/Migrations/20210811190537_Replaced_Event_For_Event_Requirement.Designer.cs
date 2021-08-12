@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using maple_syrup_api.Context;
@@ -10,9 +11,10 @@ using maple_syrup_api.Context;
 namespace maple_syrup_api.Migrations
 {
     [DbContext(typeof(MapleSyrupContext))]
-    partial class MapleSyrupContextModelSnapshot : ModelSnapshot
+    [Migration("20210811190537_Replaced_Event_For_Event_Requirement")]
+    partial class Replaced_Event_For_Event_Requirement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

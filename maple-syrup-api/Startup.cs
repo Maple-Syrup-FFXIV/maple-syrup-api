@@ -108,6 +108,10 @@ namespace maple_syrup_api
             services.AddTransient<IGuildConfigRepository, GuildConfigRepository>();
             services.AddTransient<IGuildConfigService, GuildConfigService>();
 
+            //Player
+            services.AddTransient<IPlayerRepository, PlayerRepository>();
+            services.AddTransient<IPlayerService, PlayerService>();
+
         }
     }
 }

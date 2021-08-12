@@ -28,7 +28,7 @@ namespace maple_syrup_api.Models
                                                         //BRD, MCH, DNC, => RANGED
                                                         //BLM, SMN, RDM => CASTER
                                                         //, BLUE] => BLUE MAGE
-        public virtual List<Player> Players { get; set; }
+        public virtual List<Player> Players { get; set; }//List of all Id of players currently in the fight
 
         public int PlayerLimit { get; set; }
         public int PlayerCount { get; set; }

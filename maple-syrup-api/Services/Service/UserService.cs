@@ -31,6 +31,33 @@ namespace maple_syrup_api.Services.Service
             _jwtUtils = pJwtUtils;
         }
 
+        public void AddPlayer(Player newPlayer, int UserId)
+        {
+            User User = _userRepository.Get(UserId);
+
+            User.UserPlayerList.Add(newPlayer);
+
+            _userRepository.AddOrUpdate(User);
+            _userRepository.Save();
+
+        }
+
+        public void RemovePlayer(int PlayerId, int UserId)
+        {
+            User User = _userRepository.Get(UserId);
+            int l = User.UserPlayerList.Count;
+            for (int i = 0; i < l; i++)
+            {
+                if(User.UserPlayerList[i].Id == PlayerId)
+                {
+                    User.UserPlayerList.RemoveAt(i);
+                    _userRepository.AddOrUpdate(User);
+                    _userRepository.Save();
+                    break;
+                }
+            }
+            throw new MapleException("PlayerNotFoundCouldNotRemoveFromUser");
+        }
         #region Auth
 
         public async Task<UserSummary> Login(string pDiscordCode)

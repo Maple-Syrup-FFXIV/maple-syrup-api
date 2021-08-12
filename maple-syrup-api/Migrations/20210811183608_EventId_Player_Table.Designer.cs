@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using maple_syrup_api.Context;
@@ -10,9 +11,10 @@ using maple_syrup_api.Context;
 namespace maple_syrup_api.Migrations
 {
     [DbContext(typeof(MapleSyrupContext))]
-    partial class MapleSyrupContextModelSnapshot : ModelSnapshot
+    [Migration("20210811183608_EventId_Player_Table")]
+    partial class EventId_Player_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,10 +136,10 @@ namespace maple_syrup_api.Migrations
                     b.Property<int>("DPSType")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("EventId")
+                    b.Property<int>("EventId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("EventRequirementId")
+                    b.Property<int?>("EventRequirementId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Job")
@@ -151,7 +153,7 @@ namespace maple_syrup_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventRequirementId");
 
                     b.HasIndex("UserId");
 
@@ -218,19 +220,15 @@ namespace maple_syrup_api.Migrations
 
             modelBuilder.Entity("maple_syrup_api.Models.Player", b =>
                 {
-                    b.HasOne("maple_syrup_api.Models.EventRequirement", "EventRequirement")
+                    b.HasOne("maple_syrup_api.Models.EventRequirement", null)
                         .WithMany("Players")
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("EventRequirementId");
 
-                    b.HasOne("maple_syrup_api.Models.User", "User")
+                    b.HasOne("maple_syrup_api.Models.User", null)
                         .WithMany("UserPlayerList")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("EventRequirement");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("maple_syrup_api.Models.UserToken", b =>

@@ -1,6 +1,7 @@
 ﻿using maple_syrup_api.Context;
 using maple_syrup_api.Models;
 using maple_syrup_api.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,10 @@ namespace maple_syrup_api.Repositories.Repository
 
             var result = query.ToList();
             return result;
+        }
+        
+        public Event GetEventWithPlayers(int pEventId){
+            return _context.Set<Event>().Include(s => s.Requirement.Players).FirstOrDefault(x=> x.Id == pEventId);;
         }
 
     }

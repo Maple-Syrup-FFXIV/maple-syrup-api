@@ -15,7 +15,6 @@ namespace maple_syrup_api.Services.Service
     {
         private readonly IRequirementRepository _requirementRepository;
         private readonly IEventRepository _eventRepository;
-
         public RequirementService(IRequirementRepository pRequirementRepository,IEventRepository pEventRepository)
         {
             _requirementRepository = pRequirementRepository;
@@ -87,21 +86,19 @@ namespace maple_syrup_api.Services.Service
             }
         }
 
-        public int RemovePlayer(String PlayerName, EventRequirement pRequirement)
+        public int RemovePlayer(Player Player, EventRequirement pRequirement)
         {
             int l = pRequirement.Players.Count;
             for (int i = 0; i < l; i++)
             {
-                if (PlayerName == pRequirement.Players[i].PlayerName) 
+                if (Player.Id == pRequirement.Players[i].Id) 
                 {
 
-                    Player removedPlayer = pRequirement.Players[i];
+                    pRequirement.ClassRequirement[(int)Player.Class]++;//Add a new spot for this class
+                    if (pRequirement.PreciseJob) pRequirement.PerJobRequirement[(int)Player.Job]++;//Add a new spot for this job if PreciseJob is true
+                    if (pRequirement.DPSRequiredByType && ((int)Player.Class == 2)) pRequirement.DPSTypeRequirement[(int)Player.DPSType]++;//Add a new spot for DPSType if DPSType is true and player is a DPS
 
-                    pRequirement.ClassRequirement[(int) removedPlayer.Class]++;//Add a new spot for this class
-                    if (pRequirement.PreciseJob) pRequirement.PerJobRequirement[(int) removedPlayer.Job]++;//Add a new spot for this job if PreciseJob is true
-                    if (pRequirement.DPSRequiredByType && ((int) removedPlayer.Class == 2)) pRequirement.DPSTypeRequirement[(int) removedPlayer.DPSType]++;//Add a new spot for DPSType if DPSType is true and player is a DPS
-
-                    pRequirement.Players[i] = null;//removes player object from list
+                    pRequirement.Players.RemoveAt(i);//removes player object from list. -1 means no player
                     pRequirement.PlayerCount--;
                     return 0;
                 }
@@ -116,7 +113,6 @@ namespace maple_syrup_api.Services.Service
             //add 1 by 1 the players to the NewRequirement and if an error ever comes up then we know it won't work\
             Event pEvent = _eventRepository.Get(EventId);
             List<Player> PresentList = pEvent.Requirement.Players;
-
             foreach (Player Player in PresentList)
             {
                 int result = AddPlayer(Player, NewRequirement);//Add player to the new requirement set
@@ -126,13 +122,12 @@ namespace maple_syrup_api.Services.Service
                     //In this case an error occured.
                     return result;
                 }
-                else
-                {
-                    PresentList.Add(Player);
-                    //Add takes care of updating counterList
-                }
 
             }
+
+
+
+
 
             //If we get here, NewRequirement has been filled will all PLayers from pEvent. So we simply reassign the fields of pEvent and save into the database the new requirement/Event
             NewRequirement.Id = pEvent.Requirement.Id;
@@ -141,10 +136,17 @@ namespace maple_syrup_api.Services.Service
             pEvent.Requirement = NewRequirement;
             _requirementRepository.AddOrUpdate(NewRequirement);
             _eventRepository.AddOrUpdate(pEvent);
+            _requirementRepository.Save();
+            _eventRepository.Save();
             //The NewRequirement will have the same Id as the old one
             return 0;
 
 
+        }
+
+        public EventRequirement GetRequirementWithPlayers(int pEventId){
+            EventRequirement requirement = _eventRepository.GetEventWithPlayers(pEventId)?.Requirement;
+            return requirement;
         }
 
         public EventRequirement GetRequirement(int EventId)

@@ -8,6 +8,7 @@ namespace maple_syrup_api.Repositories.IRepository
     {
         List<Event> GetAllFromStartDate(DateTime pFilterStartDate);
 
+        Event GetEventWithPlayers(int pEventId);
         
 
     }

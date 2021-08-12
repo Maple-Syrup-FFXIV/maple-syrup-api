@@ -14,6 +14,6 @@ namespace maple_syrup_api.Models
         public string UserName { get; set; }
         public string Image { get; set; }
         public virtual List<UserToken> UserTokens { get; set; }
-
+        public virtual List<Player> UserPlayerList { get; set; }
     }
 }

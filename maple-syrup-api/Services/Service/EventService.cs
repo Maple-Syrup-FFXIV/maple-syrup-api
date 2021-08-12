@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using maple_syrup_api.Exceptions;
 
 namespace maple_syrup_api.Services.Service
 {
@@ -14,12 +15,16 @@ namespace maple_syrup_api.Services.Service
         private readonly IEventRepository _eventRepository;
         private readonly IRequirementRepository _requirementRepository;
         private readonly IRequirementService _requirementService;
+        private readonly IUserService _userService;
+        private readonly IPlayerService _playerService;
 
-        public EventService(IEventRepository pEventRepository,IRequirementRepository pRequirementRepository,IRequirementService pRequirementService)
+        public EventService(IEventRepository pEventRepository,IRequirementRepository pRequirementRepository,IRequirementService pRequirementService, IUserService pUserService, IPlayerService pPlayerService)
         {
             _eventRepository = pEventRepository;
             _requirementRepository = pRequirementRepository;
             _requirementService = pRequirementService;
+            _userService = pUserService;
+            _playerService = pPlayerService;
         }
 
         public List<Event> GetAllFromStartDate(DateTime pFilterStartDate)
@@ -80,32 +85,35 @@ namespace maple_syrup_api.Services.Service
             }
         }
 
-        public void RemovePlayer(String PlayerName, int EventId)
+        public void RemovePlayer(Player Player, int EventId)
         {
             Event pEvent = _eventRepository.Get(EventId);
 
-            if (pEvent.Requirement.PlayerCount <= 0)
+            if (pEvent.Requirement.PlayerCount >= 0)
             {
-                int result = _requirementService.RemovePlayer(PlayerName, pEvent.Requirement);
+                int result = _requirementService.RemovePlayer(Player, pEvent.Requirement);
 
                 if (result == 0)
                 {
                     //Success
                     _requirementRepository.AddOrUpdate(pEvent.Requirement);
+                    //We do not remove the Player from the table, since it might be used by another event. Instead, a system will take care to check if a Player is in any event and remove that player
+                    //if it is in no events.
+                    _requirementRepository.Save();
                 }
                 else if (result == 1)
                 {
-                    //throw new MappleException("PlayerNotFound");
+                    throw new MapleException("PlayerNotFound");
                 }
                 else
                 {
                     //Bruh, if we get here computer brocky. Just throw "BrockyError"
-                    //throw new MappleException("VeryBrockyNeedFixes(AndProbablyLotsOfLove)");
+                    throw new MapleException("VeryBrockyNeedFixes(AndProbablyLotsOfLove)");
                 }
             }
             else
             {
-                //throw new MappleException("CannotRemoveFromEmptyList");
+                throw new MapleException("PlayerNotFound");
             }
         }
 
@@ -150,5 +158,23 @@ namespace maple_syrup_api.Services.Service
 
         }
 
+        public void DeleteEvent(int EventId)
+        {
+            Event rEvent = _eventRepository.Get(EventId);
+
+            foreach(Player Player in rEvent.Requirement.Players)
+            {
+                //First will go remove this player from the User
+                _userService.RemovePlayer(Player.Id, Player.UserId);
+
+                _playerService.RemovePlayer(Player);//Remove Player from database
+
+            }
+            //Now we just gotta remove Requirement and Event from DB
+            _eventRepository.Remove(rEvent);
+            _requirementRepository.Remove(rEvent.Requirement);
+            _eventRepository.Save();
+            _requirementRepository.Save();
+        }
     }
 }

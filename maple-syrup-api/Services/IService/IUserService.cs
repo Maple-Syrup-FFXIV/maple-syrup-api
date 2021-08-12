@@ -14,5 +14,10 @@ namespace maple_syrup_api.Services.IService
         public Task<UserSummary> Login(string pDiscordCode);
 
         public Task<UserSummary> Authenticate(User user, string accessToken);
+
+        public void AddPlayer(Player newPlayer, int UserId);
+
+        public void RemovePlayer(int Player, int UserId);
+
     }
 }

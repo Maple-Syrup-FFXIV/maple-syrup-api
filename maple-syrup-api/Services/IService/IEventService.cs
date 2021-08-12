@@ -12,7 +12,7 @@ namespace maple_syrup_api.Services.IService
 
         void AddPlayer(Player newPlayer,int EventId);
 
-        void RemovePlayer(String PlayerName, int EventId);
+        void RemovePlayer(Player Player, int EventId);
 
         Event UpdateEvent(UpdateEventIn NewEvent);
 

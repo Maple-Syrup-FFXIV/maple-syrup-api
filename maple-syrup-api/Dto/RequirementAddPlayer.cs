@@ -13,6 +13,7 @@ namespace maple_syrup_api.Dto
         public JobType Job { get; set; }
         public DPSType DPSType { get; set; }
         public int EventId { get; set; }
+        public int UserId { get; set; }
 
     }
 

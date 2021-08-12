@@ -9,6 +9,7 @@ using maple_syrup_api.Context;
 using maple_syrup_api.Models;
 using maple_syrup_api.Services.IService;
 using maple_syrup_api.Dto;
+using maple_syrup_api.Repositories.IRepository;
 
 namespace maple_syrup_api.Controllers
 {
@@ -18,14 +19,18 @@ namespace maple_syrup_api.Controllers
     {
         private readonly IEventService _eventService;
         private readonly IRequirementService _requirementService;
-        public EventsController( IEventService pEventService,IRequirementService pRequirementService)
+        private readonly IPlayerService _playerService;
+        private readonly IUserService _userService;
+        public EventsController(IEventService pEventService,IRequirementService pRequirementService, IPlayerService pPLayerService, IUserService pUserService)
         {
             _eventService = pEventService;
             _requirementService = pRequirementService;
+            _playerService = pPLayerService;
+            _userService = pUserService;
         }
 
         // POST: api/Events
-        [HttpPost]
+        [HttpGet]
         public ActionResult<GetEventsFromStartDateOut> GetEventsFromStartDate(GetEventsFromStartDateIn pInput)
         {
             var eventList = _eventService.GetAllFromStartDate(pInput.StartDate);
@@ -44,7 +49,6 @@ namespace maple_syrup_api.Controllers
 
             return result;
         }
-
         // POST: api/Events
         [HttpPost]
         public ActionResult<GetEventsFromStartDateOut> CreateEvent(CreateEventIn pInput)
@@ -73,7 +77,11 @@ namespace maple_syrup_api.Controllers
                 PlayerLimit = pInput.PlayerLimit,
                 PlayerCount = pInput.PlayerCount,
                 MinILevel = pInput.MinILevel,
-                MinLevel = pInput.MinLevel
+                MinLevel = pInput.MinLevel,
+                DPSTypeRequirement = pInput.DPSTypeRequirement,
+                ClassRequirement = pInput.ClassRequirement,
+                PerJobRequirement = pInput.PerJobRequirement,
+                Players = new List<Player>()
             };
             nEvent.Requirement = nRequirement;
             nEvent.RequirementId = nRequirement.Id;
@@ -83,30 +91,40 @@ namespace maple_syrup_api.Controllers
             return Ok(true);
 
         }
-
         //Added part
         [HttpPost]
         public ActionResult<bool> AddPlayerEvent(RequirementAddPlayerIn pAddPlayer)
         {
+
             Player newPlayer = new Player()
             {
+                UserId = pAddPlayer.UserId,
+                EventRequirementId = pAddPlayer.EventId,
+
                 PlayerName = pAddPlayer.PlayerName,
+
                 Class = pAddPlayer.Class,
                 Job = pAddPlayer.Job,
                 DPSType = pAddPlayer.DPSType
             };
 
+            _playerService.AddPlayer(newPlayer);
+
             _eventService.AddPlayer(newPlayer, pAddPlayer.EventId);
+            _userService.AddPlayer(newPlayer, pAddPlayer.UserId);
+
 
             return Ok(true);
 
         }
         [HttpPost]
-        public ActionResult RemovePlayerEvent(RequirementRemovePlayerIn pRemovePlayer)
+        public ActionResult<bool> RemovePlayerEvent(RequirementRemovePlayerIn pRemovePlayer)
         {
-            _eventService.RemovePlayer(pRemovePlayer.PlayerName, pRemovePlayer.EventId);
-
-            return Ok();
+            Player Player = _playerService.getPlayer(pRemovePlayer.PlayerId);
+            _eventService.RemovePlayer(Player, pRemovePlayer.EventId);
+            _userService.RemovePlayer(Player, pRemovePlayer.EventId);
+            _playerService.RemovePlayer(Player);
+            return Ok(true);
 
         }
         [HttpPost]
@@ -126,7 +144,8 @@ namespace maple_syrup_api.Controllers
             return Ok(result);
 
         }
-        [HttpPost]
+
+        [HttpGet]
         public ActionResult<GetRequirementOut> GetRequirement(GetRequirementIn pInput)
         {
             EventRequirement rReq = _requirementService.GetRequirement(pInput.EventId);
@@ -150,6 +169,7 @@ namespace maple_syrup_api.Controllers
             return Ok(result);
 
         }
+
 
         [HttpPost]
         public ActionResult<int> UpdateRequirement(UpdateRequirementIn pInput, int EventId)
@@ -182,6 +202,14 @@ namespace maple_syrup_api.Controllers
 
         }
 
+        [HttpPost]
+
+        public ActionResult<bool> DeleteEvent(DeleteEventIn pInput)
+        {
+            _eventService.DeleteEvent(pInput.EventId);
+
+            return Ok(true);
+        }
 
             //// GET: api/Events
             //[HttpGet]

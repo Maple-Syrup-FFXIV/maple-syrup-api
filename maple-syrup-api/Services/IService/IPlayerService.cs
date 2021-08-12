@@ -1,0 +1,21 @@
+﻿using maple_syrup_api.Models;
+using maple_syrup_api.Repositories.IRepository;
+using maple_syrup_api.Services.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+
+namespace maple_syrup_api.Services.IService
+{
+    public interface IPlayerService
+    {
+        Player getPlayer(int Id);
+        List<Player> getPlayerListFromId(List<int> PlayerList);
+
+        void AddPlayer(Player Player);
+
+        void RemovePlayer(Player Player);
+    }
+}
