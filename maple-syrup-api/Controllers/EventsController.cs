@@ -60,8 +60,7 @@ namespace maple_syrup_api.Controllers
             //For now Id will be requested by the caller, but could be generated
 
             Event nEvent = new Event() 
-            { 
-                Id = pInput.Id,
+            {
                 StartDate = pInput.StartDate,
                 EndDate = pInput.EndDate,
                 EventType = (EventType) pInput.EventType,
@@ -72,7 +71,6 @@ namespace maple_syrup_api.Controllers
 
             EventRequirement nRequirement = new EventRequirement()
             {
-                Id = pInput.RequirementId,
                 Event = nEvent,
                 EventId = nEvent.Id,
                 PreciseJob = pInput.PreciseJob,
@@ -90,7 +88,6 @@ namespace maple_syrup_api.Controllers
             };
             nEvent.Requirement = nRequirement;
             nEvent.RequirementId = nRequirement.Id;
-
             _eventService.CreateEvent(nEvent, nRequirement);
 
             return Ok(true);
@@ -129,8 +126,9 @@ namespace maple_syrup_api.Controllers
         {
 
             Player Player = _playerService.getPlayer(pRemovePlayer.PlayerId);
+            if (Player == null) throw new MapleException("PlayerNotFound");
             _eventService.RemovePlayer(Player, pRemovePlayer.EventId);
-            _userService.RemovePlayer(Player.Id, pRemovePlayer.EventId);
+            _userService.RemovePlayer(Player.Id, pRemovePlayer.UserId);
             _playerService.RemovePlayer(Player);
             return Ok(true);
 
@@ -191,7 +189,6 @@ namespace maple_syrup_api.Controllers
             return Ok(result);
 
         }
-
 
         [HttpPost]
         public ActionResult<int> UpdateRequirement(UpdateRequirementIn pInput)

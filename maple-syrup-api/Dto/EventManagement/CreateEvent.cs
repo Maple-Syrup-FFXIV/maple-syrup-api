@@ -9,7 +9,6 @@ namespace maple_syrup_api.Dto
     public class CreateEventIn
     {
         //Part necessary for Event
-        public int Id { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int EventType { get; set; }
@@ -19,7 +18,6 @@ namespace maple_syrup_api.Dto
 
 
         //Part necessary for Requirement
-        public int RequirementId { get; set; }
         public bool PreciseJob { get; set; }//If thisis true, when adding player will also check if their Job is in need
         //In case OnePlayerPerJob is true, PerJobRequirement all be set to 1
         public bool OnePerJob { get; set; }

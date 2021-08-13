@@ -154,6 +154,8 @@ namespace maple_syrup_api.Services.Service
             _eventRepository.Add(pEvent);
             _requirementRepository.Add(pRequirement);
 
+            _requirementRepository.Get(pRequirement.Id);
+
             _eventRepository.Save();
 
         }

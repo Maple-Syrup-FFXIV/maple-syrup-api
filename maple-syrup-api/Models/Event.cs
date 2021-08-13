@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maple_syrup_api.Models
 {
@@ -11,6 +12,7 @@ namespace maple_syrup_api.Models
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
         //public User Users List<User>;
+        [ForeignKey("RequirementId")]
         public int? RequirementId { get; set; }
         public virtual EventRequirement Requirement { get; set; }
         public string FightName { get; set; }
