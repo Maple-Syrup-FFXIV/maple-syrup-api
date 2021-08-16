@@ -71,7 +71,7 @@ namespace maple_syrup_api.Services.Service
                             user = new User()
                             {
                                 DiscordId = discordId,
-                                Image = "https://cdn.discordapp.com/" + discordId + "/" + jsonResponse.GetValue("avatar").ToString(),
+                                Image = "https://cdn.discordapp.com/avatars/" + discordId + "/" + jsonResponse.GetValue("avatar").ToString(),
                                 UserName = jsonResponse.GetValue("username").ToString()
                             };
                             _userRepository.InsertAndGetId(user);
