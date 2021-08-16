@@ -19,5 +19,6 @@ namespace maple_syrup_api.Services.IService
 
         public void RemovePlayer(int Player, int UserId);
 
+        public List<Player> GetUserPlayerList(int UserId);
     }
 }

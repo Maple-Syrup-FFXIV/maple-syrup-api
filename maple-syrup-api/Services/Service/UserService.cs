@@ -58,6 +58,11 @@ namespace maple_syrup_api.Services.Service
             }
             throw new MapleException("PlayerNotFoundCouldNotRemoveFromUser");
         }
+
+        public List<Player> GetUserPlayerList(int UserId)
+        {
+            return _userRepository.Get(UserId).UserPlayerList;
+        }
         #region Auth
 
         public async Task<UserSummary> Login(string pDiscordCode)

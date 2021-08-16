@@ -34,6 +34,18 @@ namespace maple_syrup_api.Controllers
             });
         }
 
+        [HttpGet]
+        public ActionResult<GetUserPlayerListOut> GetUserPlayerList(GetUserPlayerListIn pInput)
+        {
+            GetUserPlayerListOut result = new GetUserPlayerListOut()
+            {
+                playerList = _userService.GetUserPlayerList(pInput.UserId)
+            };
+            return Ok(result);
+        }
+
+
+
         [HttpPost]
         [Authorize]
         public ActionResult<UserSummary> Authenticate()
@@ -49,5 +61,6 @@ namespace maple_syrup_api.Controllers
             };
             return Ok(userSummary);
         }
+
     }
 }

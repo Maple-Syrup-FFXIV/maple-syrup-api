@@ -128,8 +128,8 @@ namespace maple_syrup_api.Controllers
             Player Player = _playerService.getPlayer(pRemovePlayer.PlayerId);
             if (Player == null) throw new MapleException("PlayerNotFound");
             _eventService.RemovePlayer(Player, pRemovePlayer.EventId);
-            _userService.RemovePlayer(Player.Id, pRemovePlayer.UserId);
-            _playerService.RemovePlayer(Player);
+            //_userService.RemovePlayer(Player.Id, pRemovePlayer.UserId);
+            //_playerService.RemovePlayer(Player);
             return Ok(true);
 
         }
