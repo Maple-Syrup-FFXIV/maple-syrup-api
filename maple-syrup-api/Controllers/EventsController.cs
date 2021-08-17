@@ -241,6 +241,7 @@ namespace maple_syrup_api.Controllers
             return Ok(true);
         }
 
+        [HttpGet]
         public ActionResult<DisplayEventOut> DisplayEvent(DisplayEventIn pInput)
         {
             //This function will be used to display an event on the website. It will manage the event's data and return it
