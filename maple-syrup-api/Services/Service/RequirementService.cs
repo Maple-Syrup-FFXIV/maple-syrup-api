@@ -139,7 +139,7 @@ namespace maple_syrup_api.Services.Service
             pEvent.Requirement.MinLevel = NewRequirement.MinLevel;
             pEvent.Requirement.OriginalClassRequirement = NewRequirement.ClassRequirement;
             pEvent.Requirement.OriginalPerJobRequirement = NewRequirement.PerJobRequirement;
-            pEvent.Requirement.OrignalDPSTypeRequirement = NewRequirement.DPSTypeRequirement;
+            pEvent.Requirement.OriginalDPSTypeRequirement = NewRequirement.DPSTypeRequirement;
 
 
             //If we get here, NewRequirement has been filled will all PLayers from pEvent. So we simply reassign the fields of pEvent and save into the database the new requirement/Event
@@ -161,7 +161,7 @@ namespace maple_syrup_api.Services.Service
             return _eventRepository.Get(EventId).Requirement;
         }
 
-        public List<PlayerButton> DisplayEvent(EventRequirement pRequiremet)
+        public List<PlayerButton> DisplayEvent(EventRequirement pRequirement)
         {
 
             List<PlayerButton> resultList = new List<PlayerButton>();
@@ -171,9 +171,9 @@ namespace maple_syrup_api.Services.Service
                 //It will go through each TANK,HEALER and DPS requirement in this order, find the players and add PlayerButton to the list
 
                 int count = 0;
-                int l = pRequiremet.ClassRequirement[i];
+                int l = pRequirement.OriginalClassRequirement[i];
 
-                foreach(Player Player in pRequiremet.Players)
+                foreach(Player Player in pRequirement.Players)
                 {
                     if((int) Player.Class == i)
                     {
@@ -189,11 +189,13 @@ namespace maple_syrup_api.Services.Service
 
                 if(count < l)
                 {
-                    for(int k = 0; i < (l - count); k++)
+                    for(int k = 0; k < (l - count); k++)
                     {
                         resultList.Add(new PlayerButton
                         {
-                            Icon = (IconType) (int) i
+                            Icon = (IconType) (int) i,
+                            PlayerName = "NoName",
+                            IsFree = true
                         });
                     }
                 }

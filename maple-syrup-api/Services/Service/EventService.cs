@@ -155,8 +155,6 @@ namespace maple_syrup_api.Services.Service
             _eventRepository.Add(pEvent);
             _requirementRepository.Add(pRequirement);
 
-            _requirementRepository.Get(pRequirement.Id);
-
             _eventRepository.Save();
 
         }
@@ -195,7 +193,7 @@ namespace maple_syrup_api.Services.Service
             DisplayEventOut result = new DisplayEventOut()
             {
                 NameFight = pEvent.FightName,
-                Description = pEvent.Description,
+                //Description = pEvent.Description,
 
                 PlayerCount = pEvent.Requirement.PlayerCount,
                 PlayerLimit = pEvent.Requirement.PlayerLimit,

@@ -13,10 +13,16 @@ namespace maple_syrup_api.Services.Service
     public class PlayerService : IPlayerService
     {
         private readonly IPlayerRepository _playerRepository;
+        private readonly IRequirementRepository _requirementRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IEventRepository _eventRepository;
 
-        public PlayerService(IPlayerRepository pPlayerRepository)
+        public PlayerService(IPlayerRepository pPlayerRepository, IUserRepository pUserRepository, IRequirementRepository pRequirementRepository, IEventRepository pEventRepository)
         {
             _playerRepository = pPlayerRepository;
+            _requirementRepository = pRequirementRepository;
+            _userRepository = pUserRepository;
+            _eventRepository = pEventRepository;
         }
 
         public Player getPlayer(int Id)
@@ -38,10 +44,26 @@ namespace maple_syrup_api.Services.Service
             return nList;
         }
 
-        public void AddPlayer(Player Player)
+        public Player AddPlayer(RequirementAddPlayerIn pInput)
         {
+            Player Player = new Player()
+            {
+                UserId = pInput.UserId,
+                EventRequirementId = pInput.EventId,
+
+                PlayerName = pInput.PlayerName,
+
+                Class = pInput.Class,
+                Job = pInput.Job,
+                DPSType = pInput.DPSType
+            };
+
+            Player.EventRequirement = _eventRepository.Get(pInput.EventId).Requirement;
+            Player.User = _userRepository.Get(pInput.UserId);
+
             _playerRepository.Add(Player);
             _playerRepository.Save();
+            return Player;
         }
 
         public void RemovePlayer(Player Player)

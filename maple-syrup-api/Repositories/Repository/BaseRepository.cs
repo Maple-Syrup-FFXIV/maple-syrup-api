@@ -110,7 +110,7 @@ namespace maple_syrup_api.Repositories.Repository
         {
             await _context.SaveChangesAsync();
         }
-
+        
         public void Save()
         {
             _context.SaveChanges();

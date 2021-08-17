@@ -67,13 +67,12 @@ namespace maple_syrup_api.Controllers
                 EventStatus = (EventStatus) 0,
                 FightName = pInput.FightName,
                 OwnerId = pInput.OwnerId,
-                Description = pInput.Description
+                //Description = pInput.Description
             };
 
             EventRequirement nRequirement = new EventRequirement()
             {
                 Event = nEvent,
-                EventId = nEvent.Id,
                 PreciseJob = pInput.PreciseJob,
                 OnePerJob = pInput.OnePerJob,
                 DPSRequiredByType = pInput.DPSRequiredByType,
@@ -88,10 +87,9 @@ namespace maple_syrup_api.Controllers
                 Players = new List<Player>(),
                 OriginalClassRequirement = pInput.ClassRequirement,
                 OriginalPerJobRequirement = pInput.PerJobRequirement,
-                OrignalDPSTypeRequirement = pInput.DPSTypeRequirement
+                OriginalDPSTypeRequirement = pInput.DPSTypeRequirement
             };
             nEvent.Requirement = nRequirement;
-            nEvent.RequirementId = nRequirement.Id;
             _eventService.CreateEvent(nEvent, nRequirement);
 
             return Ok(true);
@@ -103,23 +101,10 @@ namespace maple_syrup_api.Controllers
         public ActionResult<bool> AddPlayerEvent(RequirementAddPlayerIn pAddPlayer)
         {
 
-            Player newPlayer = new Player()
-            {
-                UserId = pAddPlayer.UserId,
-                EventRequirementId = pAddPlayer.EventId,
+            var Player = _playerService.AddPlayer(pAddPlayer);
 
-                PlayerName = pAddPlayer.PlayerName,
-
-                Class = pAddPlayer.Class,
-                Job = pAddPlayer.Job,
-                DPSType = pAddPlayer.DPSType
-            };
-
-            _playerService.AddPlayer(newPlayer);
-
-            _eventService.AddPlayer(newPlayer, pAddPlayer.EventId);
-            _userService.AddPlayer(newPlayer, pAddPlayer.UserId);
-
+            _eventService.AddPlayer(Player, pAddPlayer.EventId);
+            _userService.AddPlayer(Player, pAddPlayer.UserId);
 
             return Ok(true);
 

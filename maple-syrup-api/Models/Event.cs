@@ -17,7 +17,7 @@ namespace maple_syrup_api.Models
         public virtual EventRequirement Requirement { get; set; }
         public string FightName { get; set; }
         public int OwnerId { get; set; }//UserId of Creator of this Event
-        public string Description { get; set; }
+        //public string Description { get; set; }
     }
 
 

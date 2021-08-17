@@ -30,7 +30,7 @@ namespace maple_syrup_api.Dto
         public int PlayerCount { get; set; }
         public int MinILevel { get; set; }//Not yet implemented
         public int MinLevel { get; set; }//Not yet implemented
-        public string Description { get; set; }
+        //public string Description { get; set; }
     }
 
     public class CreateEventOut

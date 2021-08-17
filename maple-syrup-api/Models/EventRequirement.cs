@@ -35,7 +35,7 @@ namespace maple_syrup_api.Models
         public int MinILevel { get; set; }//Not yet implemented
         public int MinLevel { get; set; }//Not yet implemented
         public List<int> OriginalClassRequirement { get; set; }
-        public List<int> OrignalDPSTypeRequirement { get; set; }
+        public List<int> OriginalDPSTypeRequirement { get; set; }
         public List<int> OriginalPerJobRequirement { get; set; }
 
 

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using maple_syrup_api.Dto;
 
 namespace maple_syrup_api.Services.IService
 {
@@ -14,7 +14,7 @@ namespace maple_syrup_api.Services.IService
         Player getPlayer(int Id);
         List<Player> getPlayerListFromId(List<int> PlayerList);
 
-        void AddPlayer(Player Player);
+        Player AddPlayer(RequirementAddPlayerIn Player);
 
         void RemovePlayer(Player Player);
     }
