@@ -66,7 +66,8 @@ namespace maple_syrup_api.Controllers
                 EventType = (EventType) pInput.EventType,
                 EventStatus = (EventStatus) 0,
                 FightName = pInput.FightName,
-                OwnerId = pInput.OwnerId
+                OwnerId = pInput.OwnerId,
+                Description = pInput.Description
             };
 
             EventRequirement nRequirement = new EventRequirement()
@@ -84,7 +85,10 @@ namespace maple_syrup_api.Controllers
                 DPSTypeRequirement = pInput.DPSTypeRequirement,
                 ClassRequirement = pInput.ClassRequirement,
                 PerJobRequirement = pInput.PerJobRequirement,
-                Players = new List<Player>()
+                Players = new List<Player>(),
+                OriginalClassRequirement = pInput.ClassRequirement,
+                OriginalPerJobRequirement = pInput.PerJobRequirement,
+                OrignalDPSTypeRequirement = pInput.DPSTypeRequirement
             };
             nEvent.Requirement = nRequirement;
             nEvent.RequirementId = nRequirement.Id;
@@ -191,7 +195,7 @@ namespace maple_syrup_api.Controllers
         }
 
         [HttpPost]
-        public ActionResult<int> UpdateRequirement(UpdateRequirementIn pInput)
+        public ActionResult<bool> UpdateRequirement(UpdateRequirementIn pInput)
         {
 
             if (pInput.UserId != _eventService.GetIdOwner(pInput.EventId)) throw new MapleException("You do not have permission to change this");
@@ -214,11 +218,16 @@ namespace maple_syrup_api.Controllers
                 MinILevel = pInput.MinILevel,
                 MinLevel = pInput.MinLevel
             };
-
-            int result = _requirementService.UpdateRequirement(newRequirement, pInput.EventId);
+            try
+            {
+                int result = _requirementService.UpdateRequirement(newRequirement, pInput.EventId);
+            }
+            catch(Exception e)
+            {
+                return Ok(false);
+            }
             //Will have to do something depending on result
-            return Ok(result);
-
+            return Ok(true);
         }
 
         [HttpPost]
@@ -232,6 +241,20 @@ namespace maple_syrup_api.Controllers
             return Ok(true);
         }
 
+        public ActionResult<DisplayEventOut> DisplayEvent(DisplayEventIn pInput)
+        {
+            //This function will be used to display an event on the website. It will manage the event's data and return it
+            //in a simple and easy way for the website to use it
+            DisplayEventOut result;
+            try
+            {
+                result = _eventService.DisplayEvent(pInput.EventId);
+            }catch(Exception e)
+            {
+                return Ok(false);
+            }
+            return Ok(result);
+        }
             //// GET: api/Events
             //[HttpGet]
             //public async Task<ActionResult<IEnumerable<Event>>> GetEvents()

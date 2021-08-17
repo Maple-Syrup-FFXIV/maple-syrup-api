@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using maple_syrup_api.Dto.EventManagement;
 
 
 namespace maple_syrup_api.Services.Service
@@ -120,24 +120,31 @@ namespace maple_syrup_api.Services.Service
                 if (result != 0)
                 {
                     //In this case an error occured.
-                    return result;
+                    throw new MapleException("CouldNotUpdateRequirementWithGivenRequirements");
                 }
 
             }
+            //If it works get here
 
 
-
+            pEvent.Requirement.PreciseJob = NewRequirement.PreciseJob;
+            pEvent.Requirement.OnePerJob = NewRequirement.OnePerJob;
+            pEvent.Requirement.DPSRequiredByType = NewRequirement.DPSRequiredByType;
+            pEvent.Requirement.AllowBlueMage = NewRequirement.AllowBlueMage;
+            pEvent.Requirement.DPSTypeRequirement = NewRequirement.DPSTypeRequirement;
+            pEvent.Requirement.ClassRequirement = NewRequirement.ClassRequirement;
+            pEvent.Requirement.PerJobRequirement = NewRequirement.PerJobRequirement;
+            pEvent.Requirement.PlayerLimit = NewRequirement.PlayerLimit;
+            pEvent.Requirement.MinILevel = NewRequirement.MinILevel;
+            pEvent.Requirement.MinLevel = NewRequirement.MinLevel;
+            pEvent.Requirement.OriginalClassRequirement = NewRequirement.ClassRequirement;
+            pEvent.Requirement.OriginalPerJobRequirement = NewRequirement.PerJobRequirement;
+            pEvent.Requirement.OrignalDPSTypeRequirement = NewRequirement.DPSTypeRequirement;
 
 
             //If we get here, NewRequirement has been filled will all PLayers from pEvent. So we simply reassign the fields of pEvent and save into the database the new requirement/Event
-            NewRequirement.Id = pEvent.Requirement.Id;
-            NewRequirement.Event = pEvent;
-            NewRequirement.EventId = pEvent.Id;
-            pEvent.Requirement = NewRequirement;
-            _requirementRepository.AddOrUpdate(NewRequirement);
-            _eventRepository.AddOrUpdate(pEvent);
+            _requirementRepository.AddOrUpdate(pEvent.Requirement);
             _requirementRepository.Save();
-            _eventRepository.Save();
             //The NewRequirement will have the same Id as the old one
             return 0;
 
@@ -154,6 +161,53 @@ namespace maple_syrup_api.Services.Service
             return _eventRepository.Get(EventId).Requirement;
         }
 
+        public List<PlayerButton> DisplayEvent(EventRequirement pRequiremet)
+        {
+
+            List<PlayerButton> resultList = new List<PlayerButton>();
+
+            for(int i = 0;i<3; i++) 
+            {
+                //It will go through each TANK,HEALER and DPS requirement in this order, find the players and add PlayerButton to the list
+
+                int count = 0;
+                int l = pRequiremet.ClassRequirement[i];
+
+                foreach(Player Player in pRequiremet.Players)
+                {
+                    if((int) Player.Class == i)
+                    {
+                        resultList.Add(new PlayerButton()
+                        {
+                            Icon = (IconType) ((int) Player.Job + 6),
+                            PlayerName = Player.PlayerName,
+                            IsFree = false
+                        }) ;
+                        count++;
+                    }
+                }
+
+                if(count < l)
+                {
+                    for(int k = 0; i < (l - count); k++)
+                    {
+                        resultList.Add(new PlayerButton
+                        {
+                            Icon = (IconType) (int) i
+                        });
+                    }
+                }
+                else if(count > l)
+                {
+                    throw new MapleException("BigErrorOccured. Counted more of a class than this event requires");
+                }
+
+                
+
+            }
+
+            return resultList;
+        }
 
     }
 }

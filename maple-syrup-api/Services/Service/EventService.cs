@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using maple_syrup_api.Exceptions;
+using maple_syrup_api.Dto.EventManagement;
 
 namespace maple_syrup_api.Services.Service
 {
@@ -183,5 +184,30 @@ namespace maple_syrup_api.Services.Service
         {
             return _eventRepository.Get(EventId).OwnerId;
         }
+
+        public DisplayEventOut DisplayEvent(int EventId)
+        {
+
+            Event pEvent = _eventRepository.Get(EventId);
+
+            List<PlayerButton> PlayerButtonList = _requirementService.DisplayEvent(pEvent.Requirement);//Create player button list in order (TANK,HEALER,DPS)
+
+            DisplayEventOut result = new DisplayEventOut()
+            {
+                NameFight = pEvent.FightName,
+                Description = pEvent.Description,
+
+                PlayerCount = pEvent.Requirement.PlayerCount,
+                PlayerLimit = pEvent.Requirement.PlayerLimit,
+                OnePlayerPerJob = pEvent.Requirement.OnePerJob,
+                DutyComplete = false,//For now false by default
+
+                PlayerButton = PlayerButtonList
+
+            };
+
+            return result;
+        }
+
     }
 }

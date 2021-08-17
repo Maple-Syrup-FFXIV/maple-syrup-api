@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using maple_syrup_api.Dto.EventManagement;
+
 
 namespace maple_syrup_api.Services.IService
 {
@@ -21,5 +23,6 @@ namespace maple_syrup_api.Services.IService
         int UpdateRequirement(EventRequirement NewRequirement, int pEventId);
         EventRequirement GetRequirement(int pEventId);
         EventRequirement GetRequirementWithPlayers(int pEventId);
+        List<PlayerButton> DisplayEvent(EventRequirement Requirement);
     }
 }
