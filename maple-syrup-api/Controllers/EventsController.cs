@@ -101,10 +101,23 @@ namespace maple_syrup_api.Controllers
         public ActionResult<bool> AddPlayerEvent(RequirementAddPlayerIn pAddPlayer)
         {
 
-            var Player = _playerService.AddPlayer(pAddPlayer);
 
-            _eventService.AddPlayer(Player, pAddPlayer.EventId);
-            _userService.AddPlayer(Player, pAddPlayer.UserId);
+
+            Player newPlayer = new Player()
+            {
+                PlayerName = pAddPlayer.PlayerName,
+                Class = pAddPlayer.Class,
+                Job = pAddPlayer.Job,
+                DPSType = pAddPlayer.DPSType
+            };
+
+            try
+            {
+                _eventService.AddPlayer(newPlayer, pAddPlayer.EventId, pAddPlayer.UserId);
+            }catch(Exception e)
+            {
+                return Ok(e.Message);
+            }
 
             return Ok(true);
 
@@ -116,7 +129,13 @@ namespace maple_syrup_api.Controllers
 
             Player Player = _playerService.getPlayer(pRemovePlayer.PlayerId);
             if (Player == null) throw new MapleException("PlayerNotFound");
-            _eventService.RemovePlayer(Player, pRemovePlayer.EventId);
+            try
+            {
+                _eventService.RemovePlayer(Player, pRemovePlayer.EventId);
+            }catch(Exception e)
+            {
+                return Ok(e.Message);
+            }
             //_userService.RemovePlayer(Player.Id, pRemovePlayer.UserId);
             //_playerService.RemovePlayer(Player);
             return Ok(true);
@@ -138,8 +157,11 @@ namespace maple_syrup_api.Controllers
         {
 
             if (pInput.UserId != _eventService.GetIdOwner(pInput.EventId)) throw new MapleException("You do not have permission to change this");
-
-            Event rEvent = _eventService.UpdateEvent(pInput);
+            Event rEvent;
+            try {
+                rEvent = _eventService.UpdateEvent(pInput);
+            }
+            catch(Exception e) { return Ok(e.Message); }
             UpdateEventOut result = new UpdateEventOut
             {
                 StartDate = rEvent.StartDate,
@@ -221,9 +243,21 @@ namespace maple_syrup_api.Controllers
         {
             if (pInput.UserId != _eventService.GetIdOwner(pInput.EventId)) throw new MapleException("You do not have permission to change this");
 
-            _eventService.DeleteEvent(pInput.EventId);
-
+            try
+            {
+                _eventService.DeleteEvent(pInput.EventId);
+            }catch(Exception e)
+            {
+                return Ok(e.Message);
+            }
             return Ok(true);
+        }
+
+        [HttpGet]
+
+        public ActionResult<List<DisplayEventOut>> GetBrowseEvent(BrowseEventIn pInput)
+        {
+            return Ok(null);
         }
 
         [HttpGet]
@@ -237,7 +271,7 @@ namespace maple_syrup_api.Controllers
                 result = _eventService.DisplayEvent(pInput.EventId);
             }catch(Exception e)
             {
-                return Ok(false);
+                return Ok(e.Message);
             }
             return Ok(result);
         }

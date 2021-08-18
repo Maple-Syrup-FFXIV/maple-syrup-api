@@ -40,10 +40,12 @@ namespace maple_syrup_api.Services.Service
 
         //ADDED PART
 
-        public void AddPlayer(Player player, int EventId)
+        public void AddPlayer(Player player, int EventId, int UserId)
         {
 
             Event pEvent = _eventRepository.Get(EventId);
+
+            if (pEvent == null) throw new MapleException("NoEventWithGivenId");
 
             if (pEvent.Requirement.PlayerCount < pEvent.Requirement.PlayerLimit)
             {
@@ -56,39 +58,48 @@ namespace maple_syrup_api.Services.Service
 
                     //The Requirements have already been changed, the only thing left is to add the Player to the list
 
+                    player.EventRequirement = pEvent.Requirement;
+                    player.User = _userService.GetUser(UserId);
+
+                    _playerService.AddPlayer(player);
+
                     pEvent.Requirement.Players.Add(player);//Add player
                 
                     _requirementRepository.AddOrUpdate(pEvent.Requirement);
+
+
 
                     _requirementRepository.Save();
                 }
                 else if (result == 1)
                 {
-                    //throw new MappleException("ClassNotNeeded");
+                    throw new MapleException("ClassNotNeeded");
                 }
                 else if (result == 2)
                 {
-                    //throw new MappleException("JobNotNeeded");
+                    throw new MapleException("JobNotNeeded");
                 }
                 else if (result == 3)
                 {
-                    //throw new MappleExcetion("DPSTypeNotNeeded");
+                    throw new MapleException("DPSTypeNotNeeded");
                 }
                 else
                 {
                     //Bruh, if we get here computer brocky. Just throw "BrockyError"
-                    //throw new MappleException("VeryBrockyNeedFixes(AndProbablyLotsOfLove)");
+                    throw new MapleException("VeryBrockyNeedFixes(AndProbablyLotsOfLove)");
                 }
             }
             else
             {
-                //throw new MappleException("PlayerLimitExceeded");
+                throw new MapleException("PlayerLimitExceeded");
             }
         }
 
         public void RemovePlayer(Player Player, int EventId)
         {
             Event pEvent = _eventRepository.Get(EventId);
+
+            if (pEvent == null) throw new MapleException("NoEventWithGivenId");
 
             if (pEvent.Requirement.PlayerCount >= 0)
             {
@@ -124,6 +135,8 @@ namespace maple_syrup_api.Services.Service
             int Id = NewEvent.EventId;
 
             Event PastEvent = _eventRepository.Get(Id);
+
+            if (PastEvent == null) throw new MapleException("NoEventWithGivenId");
 
             Event nEvent = new Event()
             {
@@ -162,12 +175,13 @@ namespace maple_syrup_api.Services.Service
         public void DeleteEvent(int EventId)
         {
             Event rEvent = _eventRepository.Get(EventId);
-
-            foreach(Player Player in rEvent.Requirement.Players)
+            if (pEvent == null) throw new MapleException("NoEventWithGivenId");
+            int l = rEvent.Requirement.Players.Count;
+            for(int i = 0;i<l;i++)
             {
                 //First will go remove this player from the User
-                _userService.RemovePlayer(Player.Id, Player.UserId);
-
+                //_userService.RemovePlayer(Player.Id, Player.UserId);
+                Player Player = rEvent.Requirement.Players[0];
                 _playerService.RemovePlayer(Player);//Remove Player from database
 
             }
@@ -187,6 +201,11 @@ namespace maple_syrup_api.Services.Service
         {
 
             Event pEvent = _eventRepository.Get(EventId);
+
+            if(pEvent == null)
+            {
+                throw new MapleException("NoEventWithGivenIdExist");
+            }
 
             List<PlayerButton> PlayerButtonList = _requirementService.DisplayEvent(pEvent.Requirement);//Create player button list in order (TANK,HEALER,DPS)
 

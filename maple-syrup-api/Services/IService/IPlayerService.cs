@@ -14,7 +14,7 @@ namespace maple_syrup_api.Services.IService
         Player getPlayer(int Id);
         List<Player> getPlayerListFromId(List<int> PlayerList);
 
-        Player AddPlayer(RequirementAddPlayerIn Player);
+        void AddPlayer(Player Player);
 
         void RemovePlayer(Player Player);
     }

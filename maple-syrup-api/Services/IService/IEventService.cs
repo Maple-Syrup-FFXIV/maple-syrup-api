@@ -10,7 +10,7 @@ namespace maple_syrup_api.Services.IService
     {
         List<Event> GetAllFromStartDate(DateTime pFilterStartDate);
 
-        void AddPlayer(Player newPlayer,int EventId);
+        void AddPlayer(Player newPlayer,int EventId, int UserId);
 
         void RemovePlayer(Player Player, int EventId);
 

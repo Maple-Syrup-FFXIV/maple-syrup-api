@@ -59,6 +59,11 @@ namespace maple_syrup_api.Services.Service
             throw new MapleException("PlayerNotFoundCouldNotRemoveFromUser");
         }
 
+        public User GetUser(int UserId)
+        {
+            return _userRepository.Get(UserId);
+        }
+
         public List<Player> GetUserPlayerList(int UserId)
         {
             return _userRepository.Get(UserId).UserPlayerList;
