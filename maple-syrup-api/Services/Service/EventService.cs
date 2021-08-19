@@ -197,12 +197,40 @@ namespace maple_syrup_api.Services.Service
             return _eventRepository.Get(EventId).OwnerId;
         }
 
-        public DisplayEventOut DisplayEvent(int EventId)
+        public DisplayEventOut DisplayEventWithId(int EventId)
         {
+
+            //Same as DiplayEvent, but requires Id of Event instead of actual Event (NOT THE ONE USED IN BROWSEEVENT)
 
             Event pEvent = _eventRepository.Get(EventId);
 
             if(pEvent == null)
+            {
+                throw new MapleException("NoEventWithGivenIdExist");
+            }
+
+            List<PlayerButton> PlayerButtonList = _requirementService.DisplayEvent(pEvent.Requirement);//Create player button list in order (TANK,HEALER,DPS)
+
+            DisplayEventOut result = new DisplayEventOut()
+            {
+                NameFight = pEvent.FightName,
+                //Description = pEvent.Description,
+
+                PlayerCount = pEvent.Requirement.PlayerCount,
+                PlayerLimit = pEvent.Requirement.PlayerLimit,
+                OnePlayerPerJob = pEvent.Requirement.OnePerJob,
+                DutyComplete = false,//For now false by default
+
+                PlayerButton = PlayerButtonList
+
+            };
+
+            return result;
+        }
+        public DisplayEventOut DisplayEvent(Event pEvent)
+        {
+
+            if (pEvent == null)
             {
                 throw new MapleException("NoEventWithGivenIdExist");
             }
@@ -231,14 +259,16 @@ namespace maple_syrup_api.Services.Service
 
             List<Event> EventList = _eventRepository.GetAllFromStartDate(pInput.Time);
 
-            if (pInput.OnePlayerPerJob)
+
+            //Reserach in DataBase
+            if (pInput.OnePlayerPerJobCriteria)
             {
-                EventList = EventList.Where(x => x.Requirement.OnePerJob == true).ToList();
+                EventList = EventList.Where(x => x.Requirement.OnePerJob == pInput.OnePlayerPerJob).ToList();
             }
 
-            if (pInput.AllowBlueMage)
+            if (pInput.BlueMageCriteria)
             {
-                EventList = EventList.Where(x => x.Requirement.AllowBlueMage == true).ToList();
+                EventList = EventList.Where(x => x.Requirement.AllowBlueMage == pInput.AllowBlueMage).ToList();
             }
 
             if (pInput.SpecificEventType)
@@ -246,7 +276,7 @@ namespace maple_syrup_api.Services.Service
                 EventList = EventList.Where(x => x.EventType == pInput.EventType).ToList();
             }
 
-            if (pInput.HasMinILevel)
+            if (pInput.MinILevelCriteria)
             {
                 EventList = EventList.Where(x => x.Requirement.MinILevel == pInput.MinILevel).ToList();
             }
@@ -256,17 +286,35 @@ namespace maple_syrup_api.Services.Service
                 EventList = EventList.Where(x => x.FightName == pInput.FightName).ToList();
             }
 
+            if (pInput.LookingForSpecificClass)
+            {
+                foreach(int Class in pInput.ClassRestriction)
+                {
+                    EventList = EventList.Where(x => x.Requirement.ClassRequirement[Class] >= 1).ToList();
+                }
+            }
+
+            if (pInput.LookingForSpecificJob)
+            {
+                foreach (int Job in pInput.ClassRestriction)
+                {
+                    EventList = EventList.Where(x => x.Requirement.ClassRequirement[Job] >= 1).ToList();
+                }
+            }
+
+            //End of Research
+
             List<DisplayEventOut> DisplayEventList = new List<DisplayEventOut>();
 
             if(EventList.Count == 0)
             {
-
+                throw new MapleException("NoEventWithSuchResearchFilterWasFound");
             }
             else
             {
                 foreach(Event Event in EventList)
                 {
-                    var newEntry = DisplayEvent(Event.Id);//Bruh should prob change that so it doesn't call recheck of Event in DB (since already loaded)
+                    var newEntry = DisplayEvent(Event);//Bruh should prob change that so it doesn't call recheck of Event in DB (since already loaded)
                     DisplayEventList.Add(newEntry);
                 }
             }

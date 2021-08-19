@@ -11,12 +11,23 @@ namespace maple_syrup_api.Dto.EventManagement
         public int Skip { get; set; }
         public int OffSet { get; set; }
 
-        //Boolean Research
+        //List of Search Criteria that we want
+        public bool BlueMageCriteria {get; set;}
+        public bool OnePlayerPerJobCriteria{get; set;}
+        public bool SpecificEventTypeCriteria{get; set;}
+        public bool MinILevelCriteria {get; set;}
+        public bool SpecificEventType { get; set; }
+        public bool SpecificFight { get; set; }
+        public bool SpecificFithLevel { get; set; }
+        public bool LookingForSpecificJob { get; set; }
+        public bool LookingForSpecificClass { get; set; }
+
+        //List of JobRestriction
+        public List<JobType> JobRestriction { get; set; }//List containing Job we are looking for
+        public List<ClassType> ClassRestriction { get; set; }//List containing Class we are looking for
+    //Boolean Research
         public bool OnePlayerPerJob { get; set; }
         public bool AllowBlueMage { get; set; }
-        public bool SpecificEventType { get; set; }
-        public bool HasMinILevel { get; set; }
-        public bool SpecificFight { get; set; }
         //Type of fight
         public EventType EventType { get; set; }
         //

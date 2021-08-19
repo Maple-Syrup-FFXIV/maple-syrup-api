@@ -271,7 +271,7 @@ namespace maple_syrup_api.Controllers
             DisplayEventOut result;
             try
             {
-                result = _eventService.DisplayEvent(pInput.EventId);
+                result = _eventService.DisplayEventWithId(pInput.EventId);
             }catch(Exception e)
             {
                 return Ok(e.Message);

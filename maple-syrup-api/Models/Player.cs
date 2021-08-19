@@ -23,7 +23,6 @@ namespace maple_syrup_api.Models
         public JobType Job { get; set; }
         public DPSType DPSType { get; set; }
 
-
         public bool Equals(Player p2)
         {
             return (this.EventRequirement == p2.EventRequirement) && (this.UserId == p2.UserId) && (this.PlayerName == p2.PlayerName)

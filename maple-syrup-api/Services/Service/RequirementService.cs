@@ -24,7 +24,6 @@ namespace maple_syrup_api.Services.Service
 
         public int AddPlayer(Player player, EventRequirement pRequirement)
         {
-            
             if (pRequirement.ClassRequirement[(int) player.Class] > 0)
             {
                 //A spot if left. So we will check if other requirements are also met

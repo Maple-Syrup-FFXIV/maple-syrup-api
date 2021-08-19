@@ -19,7 +19,8 @@ namespace maple_syrup_api.Services.IService
         void CreateEvent(Event nEvent, EventRequirement pRequirement);
         int GetIdOwner(int EventId);
         void DeleteEvent(int EventId);
-        DisplayEventOut DisplayEvent(int EventId);
+        DisplayEventOut DisplayEventWithId(int EventId);
+        DisplayEventOut DisplayEvent(Event Event);
         List<DisplayEventOut> BrowseEvent(BrowseEventIn pInput);
     }
 }
