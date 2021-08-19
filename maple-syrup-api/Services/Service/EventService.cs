@@ -175,7 +175,7 @@ namespace maple_syrup_api.Services.Service
         public void DeleteEvent(int EventId)
         {
             Event rEvent = _eventRepository.Get(EventId);
-            if (pEvent == null) throw new MapleException("NoEventWithGivenId");
+            if (rEvent == null) throw new MapleException("NoEventWithGivenId");
             int l = rEvent.Requirement.Players.Count;
             for(int i = 0;i<l;i++)
             {
@@ -224,6 +224,55 @@ namespace maple_syrup_api.Services.Service
             };
 
             return result;
+        }
+
+        public List<DisplayEventOut> BrowseEvent(BrowseEventIn pInput)
+        {
+
+            List<Event> EventList = _eventRepository.GetAllFromStartDate(pInput.Time);
+
+            if (pInput.OnePlayerPerJob)
+            {
+                EventList = EventList.Where(x => x.Requirement.OnePerJob == true).ToList();
+            }
+
+            if (pInput.AllowBlueMage)
+            {
+                EventList = EventList.Where(x => x.Requirement.AllowBlueMage == true).ToList();
+            }
+
+            if (pInput.SpecificEventType)
+            {
+                EventList = EventList.Where(x => x.EventType == pInput.EventType).ToList();
+            }
+
+            if (pInput.HasMinILevel)
+            {
+                EventList = EventList.Where(x => x.Requirement.MinILevel == pInput.MinILevel).ToList();
+            }
+
+            if (pInput.SpecificFight)
+            {
+                EventList = EventList.Where(x => x.FightName == pInput.FightName).ToList();
+            }
+
+            List<DisplayEventOut> DisplayEventList = new List<DisplayEventOut>();
+
+            if(EventList.Count == 0)
+            {
+
+            }
+            else
+            {
+                foreach(Event Event in EventList)
+                {
+                    var newEntry = DisplayEvent(Event.Id);//Bruh should prob change that so it doesn't call recheck of Event in DB (since already loaded)
+                    DisplayEventList.Add(newEntry);
+                }
+            }
+
+            return DisplayEventList;
+
         }
 
     }

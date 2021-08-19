@@ -28,5 +28,12 @@ namespace maple_syrup_api.Repositories.Repository
             return _context.Set<Event>().Include(s => s.Requirement.Players).FirstOrDefault(x=> x.Id == pEventId);;
         }
 
+        public List<Event> GetAllAtGivenDate(DateTime pDate)
+        {
+            var query = _context.Set<Event>().Where(x => x.StartDate == pDate);
+
+            return query.ToList();
+        }
+
     }
 }

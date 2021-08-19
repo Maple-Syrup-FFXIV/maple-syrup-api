@@ -255,9 +255,12 @@ namespace maple_syrup_api.Controllers
 
         [HttpGet]
 
-        public ActionResult<List<DisplayEventOut>> GetBrowseEvent(BrowseEventIn pInput)
+        public ActionResult<BrowseEventOut> GetBrowseEvent(BrowseEventIn pInput)
         {
-            return Ok(null);
+
+            List<DisplayEventOut> result = _eventService.BrowseEvent(pInput);
+
+            return Ok(new BrowseEventOut() {ResultList = result});
         }
 
         [HttpGet]
