@@ -8,5 +8,7 @@ namespace maple_syrup_api.Services.IService
     public interface IEventService
     {
         List<Event> GetAllFromStartDate(DateTime pFilterStartDate);
+
+        void CreateOrUpdate(Event pEvent);
     }
 }

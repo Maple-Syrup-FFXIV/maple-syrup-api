@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace maple_syrup_api.Repositories.IRepository
 {
-    public interface IEventRepository
+    public interface IEventRepository : IBaseRepository<Event>
     {
         List<Event> GetAllFromStartDate(DateTime pFilterStartDate);
 

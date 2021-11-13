@@ -1,16 +1,15 @@
-﻿using System;
+﻿using maple_syrup_api.Models.Base;
+using System;
 
 namespace maple_syrup_api.Models
 {
-    public class Event
+    public class Event : BaseEntity
     {
-        public int Id { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public EventType EventType { get; set; }
         public EventStatus EventStatus { get; set; }
     }
-
 
     public enum EventType 
     { 

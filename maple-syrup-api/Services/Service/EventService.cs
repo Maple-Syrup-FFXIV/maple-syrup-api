@@ -20,5 +20,11 @@ namespace maple_syrup_api.Services.Service
         {
             return _eventRepository.GetAllFromStartDate(pFilterStartDate);
         }
+
+        public void CreateOrUpdate(Event pEvent) 
+        {
+            _eventRepository.Add(pEvent);
+        
+        }
     }
 }
